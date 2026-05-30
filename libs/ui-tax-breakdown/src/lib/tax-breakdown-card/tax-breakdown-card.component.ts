@@ -39,6 +39,22 @@ interface Row {
         </div>
       </div>
 
+      <!-- Pegging allowance banner -->
+      <div *ngIf="result.peggingAllowance > 0"
+        class="mx-5 mt-4 bg-green-50 border border-green-200 rounded-lg px-3 py-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-green-500 text-sm">trending_up</mat-icon>
+          <div>
+            <p class="text-xs font-semibold text-green-700">Pegging Allowance Active</p>
+            <p class="text-xs text-green-500 mt-0.5">
+              ({{ result.inputs.pegging?.currentRate }} − {{ result.inputs.pegging?.baseRate }})
+              × USD {{ result.inputs.pegging?.peggedUsdValue | number:'1.2-2' }}
+            </p>
+          </div>
+        </div>
+        <span class="text-sm font-bold text-green-700">+ {{ result.peggingAllowance | lkrCurrency }}</span>
+      </div>
+
       <!-- Summary tiles -->
       <div class="grid grid-cols-2 gap-px bg-gray-100 shrink-0">
         <div *ngFor="let tile of tiles" class="bg-white px-4 py-3">

@@ -28,6 +28,25 @@ import { TaxCalculationResult, TaxSlabSnapshot } from '@lankatax/data-access-cal
         </div>
       </div>
 
+      <!-- Pegging allowance notice -->
+      <div *ngIf="result.peggingAllowance > 0"
+        class="px-4 py-2.5 bg-green-50 border-b border-green-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-green-500 text-sm">trending_up</mat-icon>
+          <div>
+            <p class="text-xs font-semibold text-green-700">Pegging Allowance</p>
+            <p class="text-xs text-green-500">
+              ({{ result.inputs.pegging?.currentRate }} − {{ result.inputs.pegging?.baseRate }})
+              × USD {{ result.inputs.pegging?.peggedUsdValue | number:'1.2-2' }}
+            </p>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-sm font-bold text-green-700">+ {{ result.peggingAllowance | lkrCurrency }}</span>
+          <p class="text-xs text-green-500">added to gross</p>
+        </div>
+      </div>
+
       <!-- How APIT is computed -->
       <div class="px-4 py-3 bg-orange-50 border-b border-orange-100">
         <p class="text-xs font-semibold text-orange-700 mb-1.5">Calculation basis</p>
