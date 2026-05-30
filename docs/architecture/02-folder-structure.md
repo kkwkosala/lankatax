@@ -46,9 +46,6 @@ lankatax/
 │   │           │   ├── calculator-page.component.ts
 │   │           │   ├── calculator-page.component.html
 │   │           │   └── calculator-page.component.spec.ts
-│   │           ├── ai-insights-panel/
-│   │           │   ├── ai-insights-panel.component.ts
-│   │           │   └── ai-insights-panel.component.spec.ts
 │   │           ├── calculator.routes.ts
 │   │           └── index.ts
 │   │
@@ -249,9 +246,6 @@ lankatax/
 │   │   │   └── __tests__/
 │   │   ├── admin-exchange-rate/
 │   │   │   └── index.ts
-│   │   └── ai-insights/
-│   │       ├── index.ts
-│   │       └── __tests__/
 │   ├── migrations/
 │   │   ├── 20260601000000_create_tax_tables.sql
 │   │   ├── 20260601000100_create_users_table.sql

@@ -130,7 +130,6 @@ if (user.role !== 'admin') {
 
 **Rules:**
 - Service role key NEVER in frontend
-- OpenAI key NEVER in frontend or git
 - All secrets in `.env.local` are gitignored
 - CI/CD secrets in GitHub Actions encrypted secrets
 

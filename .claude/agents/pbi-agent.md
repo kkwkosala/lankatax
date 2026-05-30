@@ -10,7 +10,7 @@ After a design document is approved. Creates GitHub Issues before any implementa
 
 Every PBI must have:
 1. A type label: `[DB]`, `[BE]`, `[FE]`, or `[FULL]`
-2. An epic label: `epic:tax-engine`, `epic:salary-breakdown`, `epic:pegging`, `epic:usd-conversion`, `epic:tax-admin`, `epic:reporting`, `epic:auth`, `epic:ai-insights`, `epic:budget`, `epic:audit`
+2. An epic label: `epic:tax-engine`, `epic:salary-breakdown`, `epic:pegging`, `epic:usd-conversion`, `epic:tax-admin`, `epic:reporting`, `epic:auth`, `epic:budget`, `epic:audit`
 3. A priority label: `priority:critical`, `priority:high`, `priority:medium`, `priority:low`
 4. A sprint label: `sprint:1` through `sprint:6`
 

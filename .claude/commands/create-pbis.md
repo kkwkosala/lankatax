@@ -49,7 +49,7 @@ Blocked by: #N (if applicable)
 
 ## Labels to Apply
 - Type: `db`, `backend`, `frontend`
-- Epic: `epic:tax-engine`, `epic:salary-breakdown`, `epic:pegging`, `epic:usd-conversion`, `epic:tax-admin`, `epic:reporting`, `epic:auth`, `epic:ai-insights`, `epic:budget`, `epic:audit`
+- Epic: `epic:tax-engine`, `epic:salary-breakdown`, `epic:pegging`, `epic:usd-conversion`, `epic:tax-admin`, `epic:reporting`, `epic:auth`, `epic:budget`, `epic:audit`
 - Priority: `priority:critical`, `priority:high`, `priority:medium`, `priority:low`
 - Sprint: `sprint:1` through `sprint:6`
 

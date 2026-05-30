@@ -12,7 +12,6 @@
 | Backend | Supabase Edge Functions (Deno/TypeScript) |
 | Database | Supabase PostgreSQL with Row Level Security |
 | Auth | Supabase Auth (email + OAuth) |
-| AI | OpenAI GPT-4o (financial insights) |
 | CI/CD | GitHub Actions |
 | Hosting | Supabase (backend) · Vercel/Netlify (frontend) |
 
@@ -49,7 +48,6 @@
 - ✅ Historical tax year comparison
 - ✅ PDF/Excel salary reports
 - ✅ Personal budget planning
-- ✅ AI financial insights (OpenAI)
 - ✅ Admin tax rule management panel
 
 ## CI Checks (every PR)

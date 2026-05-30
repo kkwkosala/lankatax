@@ -19,7 +19,6 @@ CREATE TABLE app_config (
 |---|---|---|
 | `ff.pegging.enabled` | `true` | Enable pegging allowance calculator |
 | `ff.usd_conversion.enabled` | `true` | Show USD equivalent salary |
-| `ff.ai_insights.enabled` | `false` | AI financial insights (OpenAI) |
 | `ff.budget_planner.enabled` | `false` | Personal budget planner |
 | `ff.historical_comparison.enabled` | `false` | Tax year comparison |
 | `ff.pdf_export.enabled` | `true` | PDF salary report download |
@@ -46,8 +45,8 @@ export class FeatureFlagsService {
 ## Usage in Templates
 
 ```html
-@if (featureFlags.isEnabled('ff.ai_insights.enabled') | async) {
-  <lankatax-ai-insights />
+@if (featureFlags.isEnabled('ff.budget_planner.enabled') | async) {
+  <lankatax-budget-planner />
 }
 ```
 
@@ -55,5 +54,5 @@ export class FeatureFlagsService {
 
 Via admin panel or direct SQL:
 ```sql
-UPDATE app_config SET value = '{"enabled": true}' WHERE key = 'ff.ai_insights.enabled';
+UPDATE app_config SET value = '{"enabled": true}' WHERE key = 'ff.budget_planner.enabled';
 ```

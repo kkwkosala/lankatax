@@ -61,7 +61,7 @@ def ensure_labels_exist(headers, repo, labels):
         "epic:tax-admin": "5319e7",
         "epic:reporting": "5319e7",
         "epic:auth": "5319e7",
-        "epic:ai-insights": "5319e7",
+        "epic:ai-insights": "5319e7",  # removed — kept label for historical issues
         "epic:budget": "5319e7",
         "epic:audit": "5319e7",
         "priority:critical": "b60205",
