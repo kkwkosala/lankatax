@@ -25,6 +25,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { Subject, combineLatest } from 'rxjs';
 import { takeUntil, startWith } from 'rxjs/operators';
 import { SalaryFormValue } from '../models/salary-form.models';
+import { NumericInputDirective } from '../directives/numeric-input.directive';
 
 @Component({
   selector: 'lt-salary-input-form',
@@ -40,6 +41,7 @@ import { SalaryFormValue } from '../models/salary-form.models';
     MatExpansionModule,
     MatIconModule,
     MatDividerModule,
+    NumericInputDirective,
   ],
   template: `
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
@@ -50,11 +52,11 @@ import { SalaryFormValue } from '../models/salary-form.models';
         <div class="relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium pointer-events-none">LKR</span>
           <input
+            ltNumeric
             formControlName="basicSalary"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="0.00"
+            type="text"
+            inputmode="decimal"
+            placeholder="0"
             class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           />
         </div>
@@ -62,35 +64,6 @@ import { SalaryFormValue } from '../models/salary-form.models';
           Basic salary is required and must be >= 0
         </p>
       </div>
-
-      <!-- Allowances accordion -->
-      <details class="border border-gray-200 rounded-lg overflow-hidden">
-        <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 cursor-pointer select-none hover:bg-gray-100 transition-colors">
-          <div>
-            <span class="font-medium text-gray-800 text-sm">Allowances</span>
-            <span class="ml-2 text-xs text-gray-500">Fixed, transport, data &amp; other</span>
-          </div>
-          <mat-icon class="text-gray-400 text-base">expand_more</mat-icon>
-        </summary>
-        <div class="p-4 flex flex-col gap-3 bg-white">
-          <ng-container *ngFor="let field of allowanceFields">
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">{{ field.label }}</label>
-              <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none">LKR</span>
-                <input
-                  [formControlName]="field.key"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="0.00"
-                  class="w-full pl-12 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
-                />
-              </div>
-            </div>
-          </ng-container>
-        </div>
-      </details>
 
       <!-- Pegging Allowance -->
       <details class="border border-gray-200 rounded-lg overflow-hidden">
@@ -155,6 +128,35 @@ import { SalaryFormValue } from '../models/salary-form.models';
               </p>
             </div>
 
+          </ng-container>
+        </div>
+      </details>
+
+      <!-- Allowances accordion -->
+      <details class="border border-gray-200 rounded-lg overflow-hidden">
+        <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 cursor-pointer select-none hover:bg-gray-100 transition-colors">
+          <div>
+            <span class="font-medium text-gray-800 text-sm">Allowances</span>
+            <span class="ml-2 text-xs text-gray-500">Fixed, transport, data &amp; other</span>
+          </div>
+          <mat-icon class="text-gray-400 text-base">expand_more</mat-icon>
+        </summary>
+        <div class="p-4 flex flex-col gap-3 bg-white">
+          <ng-container *ngFor="let field of allowanceFields">
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">{{ field.label }}</label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none">LKR</span>
+                <input
+                  ltNumeric
+                  [formControlName]="field.key"
+                  type="text"
+                  inputmode="decimal"
+                  placeholder="0"
+                  class="w-full pl-12 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                />
+              </div>
+            </div>
           </ng-container>
         </div>
       </details>
