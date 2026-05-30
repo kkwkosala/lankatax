@@ -3,10 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthActions, selectAuthLoading, selectAuthError } from '@lankatax/data-access-auth';
 import { ErrorAlertComponent } from '@lankatax/ui-shared';
@@ -19,60 +15,92 @@ import { ErrorAlertComponent } from '@lankatax/ui-shared';
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
     MatProgressSpinnerModule,
     ErrorAlertComponent,
   ],
   template: `
-    <div class="min-h-screen flex items-center justify-center p-4">
-      <mat-card class="w-full max-w-md shadow-lg">
-        <mat-card-header>
-          <mat-card-title class="text-2xl font-bold">Welcome to LankaTax</mat-card-title>
-          <mat-card-subtitle>Sign in to save and track your calculations</mat-card-subtitle>
-        </mat-card-header>
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div class="w-full max-w-md">
 
-        <mat-card-content class="mt-4">
+        <!-- Logo / Brand -->
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-orange-700 rounded-xl mb-3">
+            <span class="text-white text-xl font-bold">₨</span>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900">Welcome to LankaTax</h1>
+          <p class="text-sm text-gray-500 mt-1">Sign in to save and track your calculations</p>
+        </div>
+
+        <!-- Card -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm px-8 py-8">
+
           <lt-error-alert [message]="(error$ | async)"></lt-error-alert>
 
-          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4 mt-3">
-            <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" formControlName="email" autocomplete="email" />
-              <mat-error *ngIf="form.get('email')?.hasError('required')">Required</mat-error>
-              <mat-error *ngIf="form.get('email')?.hasError('email')">Invalid email</mat-error>
-            </mat-form-field>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5">
 
-            <mat-form-field appearance="outline">
-              <mat-label>Password</mat-label>
-              <input matInput type="password" formControlName="password" autocomplete="current-password" />
-              <mat-error *ngIf="form.get('password')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+              <input
+                formControlName="email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow"
+              />
+              <p *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+                class="mt-1 text-xs text-red-500">
+                {{ form.get('email')?.hasError('required') ? 'Email is required' : 'Enter a valid email' }}
+              </p>
+            </div>
 
+            <!-- Password -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <input
+                formControlName="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow"
+              />
+              <p *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
+                class="mt-1 text-xs text-red-500">Password is required</p>
+            </div>
+
+            <!-- Submit -->
             <button
-              mat-flat-button
-              color="primary"
               type="submit"
               [disabled]="form.invalid || (loading$ | async)"
-              class="w-full"
+              class="w-full py-3 bg-orange-700 hover:bg-orange-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold rounded-lg text-sm transition-colors flex items-center justify-center gap-2"
             >
-              <mat-spinner *ngIf="loading$ | async" diameter="20" class="inline-block mr-2"></mat-spinner>
+              <mat-spinner *ngIf="loading$ | async" diameter="16"></mat-spinner>
               Sign In
             </button>
-          </form>
-        </mat-card-content>
 
-        <mat-card-actions class="px-4 pb-4">
-          <p class="text-sm text-gray-600 text-center">
-            No account? <a routerLink="/auth/register" class="text-primary-600 font-medium">Create one</a>
-          </p>
-          <p class="text-sm text-gray-500 text-center mt-2">
-            <a routerLink="/calculator" class="underline">Continue without signing in</a>
-          </p>
-        </mat-card-actions>
-      </mat-card>
+          </form>
+
+          <!-- Divider -->
+          <div class="relative my-5">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+            <div class="relative flex justify-center"><span class="px-3 bg-white text-xs text-gray-400">or</span></div>
+          </div>
+
+          <!-- Continue without signing in -->
+          <a routerLink="/calculator"
+            class="w-full block text-center py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors font-medium">
+            Continue without signing in
+          </a>
+
+        </div>
+
+        <!-- Register link -->
+        <p class="text-center text-sm text-gray-500 mt-5">
+          No account?
+          <a routerLink="/auth/register" class="text-orange-700 font-semibold hover:underline">Create one</a>
+        </p>
+
+      </div>
     </div>
   `,
 })
