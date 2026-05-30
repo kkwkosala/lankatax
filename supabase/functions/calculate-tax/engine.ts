@@ -86,32 +86,66 @@ export function calculatePeggingAllowance(pegging?: PeggingConfig): number {
   return Math.max(0, (currentRate - baseRate) * peggedUsdValue);
 }
 
-// ─── Step 5: APIT Progressive Slab Calculation ───────────────────────────────
+// ─── Step 5: APIT Calculation ─────────────────────────────────────────────────
 
 /**
- * Applies Sri Lankan progressive APIT slab structure.
- * Only the income within each band is taxed at that band's rate.
+ * Detects whether slabs use the IRD direct formula method.
+ * 2025/2026+ slabs store a fixedAmount > 0; 2024/2025 slabs have fixedAmount = 0.
  */
-export function calculateApit(monthlyTaxableIncome: number, slabs: TaxSlab[]): number {
+export function isDirectFormulaSlabs(slabs: TaxSlab[]): boolean {
+  return slabs.some(s => s.fixedAmount > 0);
+}
+
+/**
+ * IRD Table 1 Direct Formula (2025/2026+):
+ *   tax = rate × grossIncome − fixedAmount
+ *
+ * Applied to GROSS monthly salary. Personal relief (Rs. 150,000/month) is
+ * already embedded in fixedAmount — do NOT pre-deduct EPF or personal relief.
+ * Source: IRD APIT Table No. 01, 2025/2026.
+ */
+export function calculateApitDirect(grossIncome: number, slabs: TaxSlab[]): number {
+  if (grossIncome <= 0) return 0;
+  const sorted = [...slabs].sort((a, b) => a.slabOrder - b.slabOrder);
+
+  // Walk bands from lowest to highest; last matching band wins
+  let applicableSlab = sorted[0];
+  for (const slab of sorted) {
+    if (grossIncome > slab.lowerBound) applicableSlab = slab;
+    else break;
+  }
+  return round2(Math.max(0, (applicableSlab.rate * grossIncome) - applicableSlab.fixedAmount));
+}
+
+/**
+ * Progressive slice method (2024/2025 and earlier):
+ *   Each income band is taxed only on the slice that falls within it.
+ * Applied to taxableIncome (gross − EPF − personal relief).
+ */
+export function calculateApitProgressive(monthlyTaxableIncome: number, slabs: TaxSlab[]): number {
   if (monthlyTaxableIncome <= 0 || slabs.length === 0) return 0;
 
   let totalTax = 0;
   let remaining = monthlyTaxableIncome;
-
   const sorted = [...slabs].sort((a, b) => a.slabOrder - b.slabOrder);
 
   for (const slab of sorted) {
     if (remaining <= 0) break;
-
-    const bandWidth =
-      slab.upperBound !== null ? slab.upperBound - slab.lowerBound : Infinity;
-
+    const bandWidth = slab.upperBound !== null ? slab.upperBound - slab.lowerBound : Infinity;
     const incomeInBand = Math.min(remaining, bandWidth);
     totalTax += incomeInBand * slab.rate;
     remaining -= incomeInBand;
   }
-
   return round2(totalTax);
+}
+
+/**
+ * Unified APIT entry point — auto-selects calculation method based on slab data.
+ */
+export function calculateApit(income: number, slabs: TaxSlab[]): number {
+  return isDirectFormulaSlabs(slabs)
+    ? calculateApitDirect(income, slabs)
+    : calculateApitProgressive(income, slabs);
 }
 
 // ─── Main Engine ──────────────────────────────────────────────────────────────
@@ -143,8 +177,13 @@ export function runEngine(
   const employeeEpf = round2(grossSalary * rates.epfEmployeeRate);
 
   // Step 4 — Taxable Income
-  const monthlyRelief = round2(reliefAnnual / 12);
-  const taxableIncome = Math.max(0, round2(grossSalary - employeeEpf - monthlyRelief));
+  // Direct-formula slabs (2025/2026+): APIT applied to gross; personal relief embedded in fixedAmount.
+  // Progressive slabs (2024/2025):     APIT applied to (gross − EPF − personal relief).
+  const directFormula = isDirectFormulaSlabs(slabs);
+  const monthlyRelief = directFormula ? 0 : round2(reliefAnnual / 12);
+  const taxableIncome = directFormula
+    ? grossSalary
+    : Math.max(0, round2(grossSalary - employeeEpf - monthlyRelief));
 
   // Step 5 — APIT Tax
   const apitTax = calculateApit(taxableIncome, slabs);

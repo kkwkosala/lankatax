@@ -95,23 +95,44 @@ interface Row {
           <mat-icon class="text-orange-500 text-base">account_balance</mat-icon>
           <div>
             <p class="text-sm font-semibold text-gray-800">APIT Tax Brackets — {{ result.taxYearLabel }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">Annual exemption: LKR 1,200,000 (LKR 100,000/month) already built into Band 1.</p>
+            <p class="text-xs text-gray-400 mt-0.5">
+              <span *ngIf="isDirectFormula">Personal relief: LKR 150,000/month (LKR 1,800,000/year) — built into IRD formula.</span>
+              <span *ngIf="!isDirectFormula">Annual exemption: LKR 1,200,000 (LKR 100,000/month) — reflected in Band 1 (0%).</span>
+            </p>
           </div>
         </div>
 
-        <!-- How taxable income is computed -->
+        <!-- How APIT is computed -->
         <div class="px-5 py-3 bg-orange-50 border-b border-orange-100">
-          <p class="text-xs font-semibold text-orange-700 mb-1.5">How your taxable income is calculated</p>
-          <div class="flex flex-wrap gap-2 text-xs text-orange-800 items-center">
-            <span class="bg-white border border-orange-200 px-2 py-1 rounded font-medium">Gross {{ result.grossSalary | lkrCurrency }}</span>
-            <span class="text-orange-400 font-bold">−</span>
-            <span class="bg-white border border-orange-200 px-2 py-1 rounded font-medium">EPF {{ result.employeeEpf | lkrCurrency }} ({{ result.epfEmployeeRate * 100 }}%)</span>
-            <span class="text-orange-400 font-bold">=</span>
-            <span class="bg-orange-600 text-white px-2 py-1 rounded font-bold">Taxable {{ result.taxableIncome | lkrCurrency }}</span>
-          </div>
-          <p class="text-xs text-orange-500 mt-1.5">
-            ✓ The first LKR 100,000/month is tax-free — reflected in Band 1 (0%) below.
-          </p>
+          <p class="text-xs font-semibold text-orange-700 mb-1.5">How APIT tax is calculated</p>
+
+          <!-- 2025/2026+ direct formula method -->
+          <ng-container *ngIf="isDirectFormula">
+            <div class="flex flex-wrap gap-2 text-xs text-orange-800 items-center">
+              <span class="bg-white border border-orange-200 px-2 py-1 rounded font-medium">Gross {{ result.grossSalary | lkrCurrency }}</span>
+              <span class="text-orange-400 font-bold">→ find band →</span>
+              <span class="bg-white border border-orange-200 px-2 py-1 rounded font-medium">rate × gross − deduction</span>
+              <span class="text-orange-400 font-bold">=</span>
+              <span class="bg-orange-600 text-white px-2 py-1 rounded font-bold">APIT {{ result.apitTax | lkrCurrency }}</span>
+            </div>
+            <p class="text-xs text-orange-500 mt-1.5">
+              ✓ IRD Table 1 applied to gross salary directly — personal relief (LKR 150,000/month) is embedded in each band's formula.
+            </p>
+          </ng-container>
+
+          <!-- 2024/2025 progressive method -->
+          <ng-container *ngIf="!isDirectFormula">
+            <div class="flex flex-wrap gap-2 text-xs text-orange-800 items-center">
+              <span class="bg-white border border-orange-200 px-2 py-1 rounded font-medium">Gross {{ result.grossSalary | lkrCurrency }}</span>
+              <span class="text-orange-400 font-bold">−</span>
+              <span class="bg-white border border-orange-200 px-2 py-1 rounded font-medium">EPF {{ result.employeeEpf | lkrCurrency }}</span>
+              <span class="text-orange-400 font-bold">=</span>
+              <span class="bg-orange-600 text-white px-2 py-1 rounded font-bold">Taxable {{ result.taxableIncome | lkrCurrency }}</span>
+            </div>
+            <p class="text-xs text-orange-500 mt-1.5">
+              ✓ The first LKR 100,000/month is tax-free — reflected in Band 1 (0%) below.
+            </p>
+          </ng-container>
         </div>
 
         <!-- Slab table -->
@@ -119,7 +140,7 @@ interface Row {
           <div class="grid grid-cols-12 px-4 py-1.5 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wide">
             <div class="col-span-5">Monthly Range</div>
             <div class="col-span-3 text-center">Rate</div>
-            <div class="col-span-4 text-right">Tax on band</div>
+            <div class="col-span-4 text-right">Tax</div>
           </div>
 
           <ng-container *ngFor="let slab of result.taxSlabsUsed">
@@ -146,9 +167,15 @@ interface Row {
                   {{ slab.rate === 0 ? 'Exempt' : (slab.rate * 100) + '%' }}
                 </span>
               </div>
-              <div class="col-span-4 text-right font-medium" [class.text-orange-700]="isActiveSlab(slab)" [class.text-gray-400]="!isActiveSlab(slab)">
-                {{ slabTax(slab) | lkrCurrency }}
-                <span *ngIf="isActiveSlab(slab)" class="ml-1 text-orange-400">◀</span>
+              <div class="col-span-4 text-right" [class.text-orange-700]="isActiveSlab(slab)" [class.text-gray-400]="!isActiveSlab(slab)">
+                <span *ngIf="slab.rate === 0" class="text-green-600 font-medium">—</span>
+                <span *ngIf="slab.rate > 0 && isDirectFormula && !isActiveSlab(slab)" class="text-xs text-gray-300">
+                  {{ (slab.rate * 100) }}% × x − {{ slab.fixedAmount | lkrCurrency }}
+                </span>
+                <span *ngIf="slab.rate > 0 && (!isDirectFormula || isActiveSlab(slab))" class="font-medium">
+                  {{ slabTax(slab) | lkrCurrency }}
+                  <span *ngIf="isActiveSlab(slab)" class="ml-1 text-orange-400">◀</span>
+                </span>
               </div>
             </div>
           </ng-container>
@@ -161,7 +188,7 @@ interface Row {
         </div>
 
         <div class="px-5 py-2.5 bg-gray-50 text-xs text-gray-400">
-          Source: IRD APIT Table — Inland Revenue Act No. 24 of 2017 (as amended). ◀ marks your active income band.
+          Source: IRD APIT Tax Table No. 01 (2025/2026) — Inland Revenue Act No. 24 of 2017 (as amended). ◀ marks your active income band.
         </div>
       </div>
     </div>
@@ -201,15 +228,27 @@ export class TaxBreakdownCardComponent {
 
   isActiveSlab(slab: TaxSlabSnapshot): boolean {
     if (!this.result) return false;
-    const income = this.result.taxableIncome;
+    const income = this.result.taxableIncome; // grossSalary for 2025/2026 direct method
     return income > slab.lowerBound && (slab.upperBound === null || income <= slab.upperBound);
   }
 
   slabTax(slab: TaxSlabSnapshot): number {
     if (!this.result || slab.rate === 0) return 0;
     const income = this.result.taxableIncome;
+
+    if (this.isDirectFormula) {
+      // IRD formula: rate × grossIncome − fixedAmount (only meaningful for the active band)
+      if (!this.isActiveSlab(slab)) return 0;
+      return Math.max(0, Math.round((slab.rate * income - slab.fixedAmount) * 100) / 100);
+    }
+
+    // Progressive: tax on the income slice within this band
     if (income <= slab.lowerBound) return 0;
     const taxableInBand = Math.min(income, slab.upperBound ?? income) - slab.lowerBound;
     return Math.round(taxableInBand * slab.rate * 100) / 100;
+  }
+
+  get isDirectFormula(): boolean {
+    return (this.result?.taxSlabsUsed ?? []).some(s => s.fixedAmount > 0);
   }
 }
