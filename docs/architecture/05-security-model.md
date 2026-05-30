@@ -115,7 +115,7 @@ if (user.role !== 'admin') {
 | A07 Auth Failures | Supabase Auth with brute force protection; JWT validation in every function | ✅ |
 | A08 Integrity Failures | Tax slabs snapshotted in calculations; audit log append-only | ✅ |
 | A09 Logging Failures | Audit log captures all sensitive actions; security events logged | ✅ |
-| A10 SSRF | Edge Functions only call Supabase DB and OpenAI (allowlisted) | ✅ |
+| A10 SSRF | Edge Functions only call Supabase DB | ✅ |
 
 ---
 
@@ -126,7 +126,6 @@ if (user.role !== 'admin') {
 | Supabase URL | `.env.local` / Vercel env var | Frontend + Edge Functions |
 | Supabase Anon Key | `.env.local` / Vercel env var | Frontend (public key — safe) |
 | Supabase Service Role Key | Supabase Edge Function secrets ONLY | Edge Functions (server-side) |
-| OpenAI API Key | Supabase Edge Function secrets ONLY | `ai-insights` function only |
 | Exchange Rate API Key | Supabase Edge Function secrets ONLY | `admin-exchange-rate` function |
 
 **Rules:**

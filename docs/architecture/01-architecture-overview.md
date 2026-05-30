@@ -33,8 +33,8 @@
 │  │  │  calculate-tax   │ get-tax-rules    │ │  Deployed globally        │
 │  │  │  salary-profiles │ save-calculation │ │  ~0ms latency to DB       │
 │  │  │  generate-report │ get-exchange-rate│ │                           │
-│  │  │  admin-tax-rules │ ai-insights      │ │                           │
-│  │  │  get-budget      │ audit-logs       │ │                           │
+│  │  │  admin-tax-rules │ audit-logs       │ │                           │
+│  │  │  get-budget      │ admin-exch-rate  │ │                           │
 │  │  └──────────┬──────────────────────────┘ │                           │
 │  │             │ SQL (service role / anon)   │                           │
 │  │  ┌──────────▼──────────────────────────┐ │                           │
@@ -51,11 +51,6 @@
 │  │  │     Supabase Storage                │ │  Generated PDF/Excel      │
 │  │  │  (generated-reports bucket)         │ │  Pre-signed URLs (10 min) │
 │  │  └─────────────────────────────────────┘ │                           │
-│  └──────────────────────────────────────────┘                           │
-│                     │                                                    │
-│  ┌──────────────────▼───────────────────────┐                           │
-│  │           EXTERNAL SERVICES              │                           │
-│  │  OpenAI API  (ai-insights function only) │                           │
 │  └──────────────────────────────────────────┘                           │
 │                                                                          │
 │  ┌──────────────────────────────────────────┐                           │

@@ -374,7 +374,6 @@ CREATE POLICY "app_config_admin_write" ON app_config FOR ALL
 INSERT INTO app_config (key, value, description) VALUES
   ('ff.pegging.enabled',             '{"enabled": true}',  'Enable pegging allowance calculator'),
   ('ff.usd_conversion.enabled',      '{"enabled": true}',  'Show USD equivalent salary'),
-  ('ff.ai_insights.enabled',         '{"enabled": false}', 'AI financial insights (OpenAI)'),
   ('ff.budget_planner.enabled',      '{"enabled": false}', 'Personal budget planning'),
   ('ff.historical_comparison.enabled','{"enabled": false}', 'Tax year comparison'),
   ('ff.pdf_export.enabled',          '{"enabled": true}',  'PDF salary report download');

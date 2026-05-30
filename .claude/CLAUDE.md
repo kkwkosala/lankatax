@@ -5,7 +5,7 @@
 AI SDLC platform for the LankaTax team. Governs every feature from raw requirement to production.
 
 **Product:** Sri Lankan Salary Tax Calculator & Budgeting Platform
-**Stack:** Angular 20 · Angular Material · NgRx · Tailwind CSS · Supabase · PostgreSQL · Edge Functions · OpenAI
+**Stack:** Angular 20 · Angular Material · NgRx · Tailwind CSS · Supabase · PostgreSQL · Edge Functions
 **AI Tools:** GitHub Copilot (IDE completion) · Claude (SDLC workflow commands + agents)
 
 ---
@@ -79,7 +79,6 @@ supabase/
     generate-report/      # POST: Generate PDF/Excel report
     get-budget/           # GET/POST: Budget CRUD
     admin-tax-rules/      # PUT: Admin — update tax slabs
-    ai-insights/          # POST: OpenAI financial insights
   migrations/             # Versioned SQL migration files
   seed/                   # Seed data (default tax slabs, rates)
 ```
@@ -190,8 +189,7 @@ IF pegging_enabled:
 3. All DB tables must have RLS enabled with explicit policies
 4. User salary data is isolated by `auth.uid()` in RLS policies
 5. Admin endpoints require `role = 'admin'` claim check
-6. OpenAI API key stored in Supabase secrets only
-7. No salary data in logs or error messages
+6. No salary data in logs or error messages
 
 ---
 

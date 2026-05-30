@@ -34,9 +34,8 @@
 | AD5 | Tax rule storage | PostgreSQL tables (not config files) | Admin-editable without deployments; versioned by effective_date |
 | AD6 | Auth provider | Supabase Auth | Integrated with DB, RLS uses auth.uid() natively |
 | AD7 | PDF generation | Server-side Edge Function | Consistent output, no client-side library bloat |
-| AD8 | AI integration | OpenAI via Edge Function only | API key never exposed to client; rate limiting enforced server-side |
-| AD9 | Monorepo | NX workspace | Enforced library boundaries, shared TypeScript paths, affected builds |
-| AD10 | Audit log | Append-only Postgres table | Tamper-proof, queryable, no external service needed at MVP scale |
+| AD8 | Monorepo | NX workspace | Enforced library boundaries, shared TypeScript paths, affected builds |
+| AD9 | Audit log | Append-only Postgres table | Tamper-proof, queryable, no external service needed at MVP scale |
 
 ---
 

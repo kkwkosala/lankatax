@@ -167,18 +167,6 @@ export interface AuditLogEntry {
   newValues: Record<string, unknown> | null;
   createdAt: string;
 }
-
-// ─── AI Insights ──────────────────────────────────────────────────────
-export interface AiInsightsRequest {
-  calculationId: string;
-}
-
-export interface AiInsightsResponse {
-  insights: string[];
-  budgetRecommendations?: string[];
-  disclaimer: string;
-  generatedAt: string;
-}
 ```
 
 ---
@@ -338,23 +326,7 @@ GET  /functions/v1/admin-exchange-rate/history
      Response 200: ExchangeRate[]  (last 30 records)
 ```
 
-### 10. `ai-insights`
-
-```
-POST /functions/v1/ai-insights
-     Authorization: Required
-     Request: AiInsightsRequest  { calculationId: string }
-
-     Rate limit: 3 requests per user per day
-     Feature flag: ff.ai_insights.enabled must be true
-
-     Response 200: AiInsightsResponse
-     Response 402: ApiError { code: "DAILY_LIMIT_EXCEEDED" }
-     Response 403: ApiError { code: "FEATURE_DISABLED" }
-     Response 504: ApiError { code: "AI_TIMEOUT" }
-```
-
-### 11. `audit-logs` (Admin only)
+### 10. `audit-logs` (Admin only)
 
 ```
 GET /functions/v1/audit-logs
