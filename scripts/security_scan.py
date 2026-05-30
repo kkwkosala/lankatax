@@ -35,9 +35,9 @@ SECURITY_RULES = [
     },
     {
         "id": "SEC004",
-        "desc": "OpenAI API key",
+        "desc": "OpenAI API key pattern (not used — kept as generic secret detector)",
         "pattern": r"sk-[a-zA-Z0-9]{32,}",
-        "message": "OpenAI API key must be stored in Supabase secrets, not source code",
+        "message": "Potential API key detected in source code — move to environment secrets",
         "severity": "critical",
     },
     # Injection

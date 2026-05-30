@@ -19,7 +19,6 @@ SUPABASE_ANON_KEY=local-anon-key
 NEXT_PUBLIC_APP_ENV=local
 
 # Set in Supabase project secrets (Edge Functions):
-OPENAI_API_KEY=sk-...
 EXCHANGE_RATE_API_KEY=...
 ```
 

@@ -20,7 +20,7 @@
 | [EPIC 5](epic-05-tax-admin.md) | Tax Rule Administration | 5 | 🟠 High | 2 |
 | [EPIC 6](epic-06-reporting.md) | Reporting & Exports | 4 | 🟡 Medium | 4 |
 | [EPIC 7](epic-07-auth-profiles.md) | Authentication & Profiles | 5 | 🔴 Critical | 1 |
-| [EPIC 8](epic-08-ai-insights.md) | AI Financial Insights | 3 | 🟢 Low | 6 |
+| [EPIC 8](epic-08-ai-insights.md) | ~~AI Financial Insights~~ *(removed — external API cost)* | - | - | - |
 | [EPIC 9](epic-09-budget-planning.md) | Budget Planning | 4 | 🟡 Medium | 5 |
 | [EPIC 10](epic-10-audit-compliance.md) | Audit & Compliance | 4 | 🟠 High | 2 |
 
@@ -35,7 +35,7 @@
 | Sprint 3 | Pegging + USD | EPIC 3 (Pegging), EPIC 4 (USD) |
 | Sprint 4 | Reporting | EPIC 6 (Reports) |
 | Sprint 5 | Budget Planner | EPIC 9 (Budget) |
-| Sprint 6 | AI Advisor | EPIC 8 (AI Insights) |
+| Sprint 6 | Audit & Compliance | EPIC 10 (Audit) |
 
 ---
 

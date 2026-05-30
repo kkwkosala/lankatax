@@ -124,7 +124,7 @@ console.log(`User ${user.email} calculated tax: LKR ${grossSalary}`);
 |---|---|
 | `info` | Normal operations: calculation completed, profile saved |
 | `warn` | Non-critical issues: stale exchange rate used, rate limit approaching |
-| `error` | Failures: DB error, auth failure, OpenAI timeout |
+| `error` | Failures: DB error, auth failure, Edge Function timeout |
 | `debug` | Development only — never in production |
 
 ### Angular Logging
