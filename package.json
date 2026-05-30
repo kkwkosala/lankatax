@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.0.0",
-    "@angular/cli": "~20.0.0",
+    "@angular/cli": "~20.3.26",
     "@angular/compiler-cli": "^20.0.0",
     "@nx/angular": "^20.0.0",
     "@nx/eslint": "^20.0.0",
