@@ -85,11 +85,12 @@ interface Row {
           </div>
         </ng-container>
 
-        <!-- USD equivalent -->
-        <div *ngIf="result.usdEquivalent" class="mt-3 bg-blue-50 rounded-lg px-3 py-2 text-xs text-blue-700 flex items-center gap-2">
+        <!-- Basic USD Salary (only when pegging is active) -->
+        <div *ngIf="result.inputs.pegging?.enabled && result.inputs.pegging?.baseRate"
+          class="mt-3 bg-blue-50 rounded-lg px-3 py-2 text-xs text-blue-700 flex items-center gap-2">
           <mat-icon class="text-blue-400 text-sm">attach_money</mat-icon>
-          USD equivalent: <strong>USD {{ result.usdEquivalent | number:'1.2-2' }}</strong>
-          &nbsp;@ LKR {{ result.exchangeRateUsed }}/USD
+          Basic USD Salary: <strong>USD {{ (result.inputs.basicSalary / result.inputs.pegging!.baseRate!) | number:'1.2-2' }}</strong>
+          &nbsp;@ LKR {{ result.inputs.pegging!.baseRate }}/USD (base rate)
         </div>
 
         <!-- Rate badges -->

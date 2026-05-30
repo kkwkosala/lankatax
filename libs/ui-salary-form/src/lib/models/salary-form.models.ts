@@ -8,5 +8,4 @@ export interface SalaryFormValue {
   peggingBaseRate: number | null;
   peggingCurrentRate: number | null;
   peggingUsdValue: number | null;
-  exchangeRate: number | null;
 }

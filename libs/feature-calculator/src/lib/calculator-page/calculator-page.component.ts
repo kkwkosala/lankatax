@@ -116,7 +116,6 @@ export class CalculatorPageComponent {
       transportAllowance: formValue.transportAllowance || undefined,
       dataAllowance:      formValue.dataAllowance      || undefined,
       otherAllowances:    formValue.otherAllowances    || undefined,
-      exchangeRate:       formValue.exchangeRate       ?? undefined,
       pegging: formValue.peggingEnabled
         ? {
             enabled:      true,

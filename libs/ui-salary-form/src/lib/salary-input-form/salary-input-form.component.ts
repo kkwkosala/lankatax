@@ -159,20 +159,6 @@ import { SalaryFormValue } from '../models/salary-form.models';
         </div>
       </details>
 
-      <!-- Exchange Rate -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Exchange Rate <span class="text-gray-400 font-normal">(LKR / USD)</span></label>
-        <input
-          formControlName="exchangeRate"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="Leave blank to use latest from database"
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-        />
-        <p class="mt-1 text-xs text-gray-400">Used only for USD equivalent display</p>
-      </div>
-
       <!-- Submit -->
       <button
         type="submit"
@@ -214,7 +200,6 @@ export class SalaryInputFormComponent implements OnInit, OnDestroy {
       peggingBaseRate:   [null],
       peggingCurrentRate:[null],
       peggingUsdValue:   [null],
-      exchangeRate:      [null],
     });
 
     // Auto-compute pegged USD value = basicSalary / baseRate
@@ -272,7 +257,6 @@ export class SalaryInputFormComponent implements OnInit, OnDestroy {
         peggingBaseRate:    v.peggingBaseRate,
         peggingCurrentRate: v.peggingCurrentRate,
         peggingUsdValue:    v.peggingUsdValue,
-        exchangeRate:       v.exchangeRate,
       });
     }
   }
