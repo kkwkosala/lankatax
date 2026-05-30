@@ -2,22 +2,16 @@ import {
   Component,
   ChangeDetectionStrategy,
   inject,
-  OnInit,
-  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MatIconModule } from '@angular/material/icon';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged, filter, skip, take } from 'rxjs/operators';
 import {
   CalculatorActions,
   selectCalculationResult,
   selectCalculatorLoading,
   selectCalculatorError,
-  selectIsSaving,
-  selectSavedId,
-  selectSaveError,
 } from '@lankatax/data-access-calculator';
 import { selectIsAuthenticated } from '@lankatax/data-access-auth';
 import { SalaryInputFormComponent, SalaryFormValue } from '@lankatax/ui-salary-form';
@@ -25,17 +19,13 @@ import { TaxBreakdownCardComponent, TaxBracketsCardComponent } from '@lankatax/u
 import { DisclaimerBannerComponent, LoadingSpinnerComponent } from '@lankatax/ui-shared';
 import type { TaxCalculationRequest } from '@lankatax/data-access-calculator';
 
-interface Toast {
-  message: string;
-  type: 'success' | 'error';
-}
-
 @Component({
   selector: 'lt-calculator-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
+    RouterLink,
     MatIconModule,
     SalaryInputFormComponent,
     TaxBreakdownCardComponent,
@@ -52,17 +42,6 @@ interface Toast {
       </div>
 
       <lt-disclaimer-banner class="block mb-5"></lt-disclaimer-banner>
-
-      <!-- Toast notification -->
-      <div *ngIf="toast$ | async as toast"
-        class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg text-sm font-medium transition-all"
-        [class.bg-green-600]="toast.type === 'success'"
-        [class.bg-red-600]="toast.type === 'error'"
-        [class.text-white]="true"
-      >
-        <mat-icon class="text-base">{{ toast.type === 'success' ? 'check_circle' : 'error_outline' }}</mat-icon>
-        {{ toast.message }}
-      </div>
 
       <!-- 3-column card layout -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
@@ -90,19 +69,31 @@ interface Toast {
             </div>
           </ng-container>
 
-          <ng-container *ngIf="(result$ | async) && !(loading$ | async)">
-            <lt-tax-breakdown-card [result]="result$ | async"></lt-tax-breakdown-card>
+          <ng-container *ngIf="(result$ | async) as result">
+            <ng-container *ngIf="!(loading$ | async)">
+              <lt-tax-breakdown-card [result]="result"></lt-tax-breakdown-card>
 
-            <!-- Save button — only when authenticated -->
-            <ng-container *ngIf="isAuthenticated$ | async">
-              <button
-                (click)="onSave()"
-                [disabled]="saving$ | async"
-                class="mt-3 w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border border-orange-300 bg-orange-50 hover:bg-orange-100 disabled:opacity-50 disabled:cursor-not-allowed text-orange-700 text-sm font-medium transition-colors"
-              >
-                <mat-icon class="text-base">{{ (saving$ | async) ? 'hourglass_empty' : 'bookmark_add' }}</mat-icon>
-                {{ (saving$ | async) ? 'Saving…' : 'Save Calculation' }}
-              </button>
+              <!-- Auto-save indicator -->
+              <div class="mt-3">
+                <!-- Authenticated + auto-saved -->
+                <div *ngIf="result.calculationId"
+                  class="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
+                  <mat-icon class="text-green-500 text-sm">check_circle</mat-icon>
+                  <span>Saved to history</span>
+                  <a routerLink="/reports/history"
+                    class="ml-auto text-green-600 underline hover:text-green-800 font-medium">View history</a>
+                </div>
+
+                <!-- Not authenticated -->
+                <div *ngIf="!result.calculationId && !(isAuthenticated$ | async)"
+                  class="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-500">
+                  <mat-icon class="text-gray-400 text-sm">bookmark_border</mat-icon>
+                  <span>
+                    <a routerLink="/auth/login" class="text-orange-700 font-medium hover:underline">Sign in</a>
+                    to save calculations to history
+                  </span>
+                </div>
+              </div>
             </ng-container>
           </ng-container>
 
@@ -137,39 +128,13 @@ interface Toast {
     </div>
   `,
 })
-export class CalculatorPageComponent implements OnInit, OnDestroy {
+export class CalculatorPageComponent {
   private readonly store = inject(Store);
-  private readonly destroy$ = new Subject<void>();
 
-  result$        = this.store.select(selectCalculationResult);
-  loading$       = this.store.select(selectCalculatorLoading);
-  error$         = this.store.select(selectCalculatorError);
-  saving$        = this.store.select(selectIsSaving);
+  result$          = this.store.select(selectCalculationResult);
+  loading$         = this.store.select(selectCalculatorLoading);
+  error$           = this.store.select(selectCalculatorError);
   isAuthenticated$ = this.store.select(selectIsAuthenticated);
-
-  readonly toast$ = new BehaviorSubject<Toast | null>(null);
-  private toastTimer: ReturnType<typeof setTimeout> | null = null;
-
-  ngOnInit(): void {
-    this.store.select(selectSavedId).pipe(
-      distinctUntilChanged(),
-      skip(1),
-      filter(Boolean),
-      takeUntil(this.destroy$),
-    ).subscribe(() => this.showToast('Calculation saved to history!', 'success'));
-
-    this.store.select(selectSaveError).pipe(
-      distinctUntilChanged(),
-      filter(Boolean),
-      takeUntil(this.destroy$),
-    ).subscribe((err) => this.showToast(err, 'error'));
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-  }
 
   onCalculate(formValue: SalaryFormValue): void {
     const request: TaxCalculationRequest = {
@@ -188,20 +153,5 @@ export class CalculatorPageComponent implements OnInit, OnDestroy {
         : undefined,
     };
     this.store.dispatch(CalculatorActions.calculate({ request }));
-  }
-
-  onSave(): void {
-    this.store.select(selectCalculationResult).pipe(
-      take(1),
-      filter(Boolean),
-    ).subscribe((result) => {
-      this.store.dispatch(CalculatorActions.saveCalculation({ result }));
-    });
-  }
-
-  private showToast(message: string, type: 'success' | 'error'): void {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toast$.next({ message, type });
-    this.toastTimer = setTimeout(() => this.toast$.next(null), 3500);
   }
 }
