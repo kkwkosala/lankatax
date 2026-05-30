@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -77,11 +77,12 @@ import { ErrorAlertComponent } from '@lankatax/ui-shared';
   `,
 })
 export class LoginPageComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly store = inject(Store);
+
   form!: FormGroup;
   loading$ = this.store.select(selectAuthLoading);
   error$ = this.store.select(selectAuthError);
-
-  constructor(private readonly fb: FormBuilder, private readonly store: Store) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'npm:@supabase/supabase-js@^2';
 import { handleCors } from '../_shared/cors.ts';
 import { errorResponse, jsonResponse } from '../_shared/response.ts';
 
@@ -18,7 +18,7 @@ Deno.serve(async (req: Request) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   );
 
-  // ── Tax Year ──────────────────────────────────────────────────────────────
+  // â”€â”€ Tax Year â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let taxYearQuery = serviceClient
     .from('tax_years')
     .select('id, label, start_date, end_date, is_current')
@@ -35,7 +35,7 @@ Deno.serve(async (req: Request) => {
     return errorResponse('Tax year not found', 'TAX_YEAR_NOT_FOUND', 404);
   }
 
-  // ── Tax Slabs ─────────────────────────────────────────────────────────────
+  // â”€â”€ Tax Slabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const { data: slabRows, error: slabError } = await serviceClient
     .from('tax_slabs')
     .select('lower_bound, upper_bound, rate, fixed_amount, slab_order, effective_date')
@@ -55,7 +55,7 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // ── Tax Rates ─────────────────────────────────────────────────────────────
+  // â”€â”€ Tax Rates â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const { data: rateRows, error: rateError } = await serviceClient
     .from('tax_rules')
     .select('rule_type, rate_value, effective_date')

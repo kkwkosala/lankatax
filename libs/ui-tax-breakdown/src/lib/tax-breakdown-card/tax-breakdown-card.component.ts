@@ -1,161 +1,129 @@
-import {
+﻿import {
   Component,
   Input,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import { LkrCurrencyPipe } from '@lankatax/ui-shared';
 import { TaxCalculationResult } from '@lankatax/data-access-calculator';
 
-interface BreakdownRow {
+interface Row {
   label: string;
   value: number | null;
-  highlight?: 'positive' | 'negative' | 'neutral';
+  sub?: boolean;
   bold?: boolean;
-  indent?: boolean;
+  color?: 'green' | 'red' | 'blue';
+  separator?: boolean;
 }
 
 @Component({
   selector: 'lt-tax-breakdown-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatDividerModule,
-    MatIconModule,
-    MatChipsModule,
-    LkrCurrencyPipe,
-  ],
+  imports: [CommonModule, MatIconModule, LkrCurrencyPipe],
   template: `
-    <mat-card *ngIf="result" class="shadow-md">
-      <mat-card-header>
-        <mat-card-title class="flex items-center gap-2">
-          <mat-icon color="primary">calculate</mat-icon>
-          Salary Breakdown — {{ result.taxYearLabel }}
-        </mat-card-title>
-        <mat-card-subtitle>Calculated at {{ result.calculatedAt | date:'medium' }}</mat-card-subtitle>
-      </mat-card-header>
+    <div *ngIf="result" class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
 
-      <mat-card-content class="mt-4 space-y-1">
-
-        <!-- Income section -->
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-3 mb-1">Income</p>
-        <ng-container *ngFor="let row of incomeRows">
-          <ng-container *ngTemplateOutlet="rowTpl; context: { row }"></ng-container>
-        </ng-container>
-
-        <mat-divider class="my-3"></mat-divider>
-
-        <!-- Deductions section -->
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-3 mb-1">Deductions</p>
-        <ng-container *ngFor="let row of deductionRows">
-          <ng-container *ngTemplateOutlet="rowTpl; context: { row }"></ng-container>
-        </ng-container>
-
-        <mat-divider class="my-3"></mat-divider>
-
-        <!-- Summary section -->
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-3 mb-1">Summary</p>
-        <ng-container *ngFor="let row of summaryRows">
-          <ng-container *ngTemplateOutlet="rowTpl; context: { row }"></ng-container>
-        </ng-container>
-
-        <mat-divider class="my-3"></mat-divider>
-
-        <!-- Employer section -->
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-3 mb-1">Employer Cost</p>
-        <ng-container *ngFor="let row of employerRows">
-          <ng-container *ngTemplateOutlet="rowTpl; context: { row }"></ng-container>
-        </ng-container>
-
-        <!-- Rates used -->
-        <div class="mt-4 flex flex-wrap gap-2">
-          <mat-chip-set>
-            <mat-chip>EPF (E): {{ result.epfEmployeeRate * 100 }}%</mat-chip>
-            <mat-chip>EPF (ER): {{ result.epfEmployerRate * 100 }}%</mat-chip>
-            <mat-chip>ETF: {{ result.etfEmployerRate * 100 }}%</mat-chip>
-          </mat-chip-set>
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-orange-700 to-orange-600 px-5 py-4 text-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-orange-200 uppercase tracking-wide">Tax Year</p>
+            <p class="text-lg font-bold mt-0.5">{{ result.taxYearLabel }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-xs text-orange-200">Take-Home</p>
+            <p class="text-xl font-bold mt-0.5">{{ result.takeHomeSalary | lkrCurrency }}</p>
+          </div>
         </div>
+      </div>
+
+      <!-- Summary tiles -->
+      <div class="grid grid-cols-2 gap-px bg-gray-100">
+        <div *ngFor="let tile of tiles" class="bg-white px-4 py-3">
+          <p class="text-xs text-gray-400">{{ tile.label }}</p>
+          <p class="text-sm font-semibold mt-0.5" [ngClass]="tile.cls">{{ tile.value | lkrCurrency }}</p>
+        </div>
+      </div>
+
+      <!-- Detail rows -->
+      <div class="px-5 py-4 space-y-0.5">
+
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Full Breakdown</p>
+
+        <ng-container *ngFor="let row of rows">
+          <hr *ngIf="row.separator" class="my-2 border-gray-100" />
+          <div
+            class="flex justify-between items-center py-1.5 text-sm"
+            [class.pl-3]="row.sub"
+          >
+            <span [class.text-gray-400]="row.sub" [class.text-gray-700]="!row.sub" [class.font-semibold]="row.bold">
+              {{ row.label }}
+            </span>
+            <span
+              [class.font-semibold]="row.bold"
+              [class.text-green-600]="row.color === 'green'"
+              [class.text-red-500]="row.color === 'red'"
+              [class.text-blue-600]="row.color === 'blue'"
+              [class.text-gray-800]="!row.color"
+            >
+              {{ row.value | lkrCurrency }}
+            </span>
+          </div>
+        </ng-container>
 
         <!-- USD equivalent -->
-        <div *ngIf="result.usdEquivalent" class="mt-3 p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
-          <mat-icon class="text-blue-400 text-base align-middle">attach_money</mat-icon>
+        <div *ngIf="result.usdEquivalent" class="mt-3 bg-blue-50 rounded-lg px-3 py-2 text-xs text-blue-700 flex items-center gap-2">
+          <mat-icon class="text-blue-400 text-sm">attach_money</mat-icon>
           USD equivalent: <strong>USD {{ result.usdEquivalent | number:'1.2-2' }}</strong>
-          (@ LKR {{ result.exchangeRateUsed }}/USD)
+          &nbsp;@ LKR {{ result.exchangeRateUsed }}/USD
         </div>
 
-      </mat-card-content>
-    </mat-card>
+        <!-- Rates -->
+        <div class="mt-3 flex flex-wrap gap-2">
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">EPF (Employee) {{ result.epfEmployeeRate * 100 }}%</span>
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">EPF (Employer) {{ result.epfEmployerRate * 100 }}%</span>
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">ETF {{ result.etfEmployerRate * 100 }}%</span>
+        </div>
 
-    <!-- Row template -->
-    <ng-template #rowTpl let-row="row">
-      <div
-        class="flex justify-between items-center py-1 text-sm"
-        [class.pl-4]="row.indent"
-        [class.font-semibold]="row.bold"
-      >
-        <span class="text-gray-700">{{ row.label }}</span>
-        <span
-          [class.text-green-700]="row.highlight === 'positive'"
-          [class.text-red-600]="row.highlight === 'negative'"
-          [class.text-gray-900]="!row.highlight || row.highlight === 'neutral'"
-        >
-          {{ row.value | lkrCurrency }}
-        </span>
+        <p class="mt-3 text-xs text-gray-300">{{ result.disclaimer }}</p>
       </div>
-    </ng-template>
+    </div>
   `,
 })
 export class TaxBreakdownCardComponent {
   @Input() result: TaxCalculationResult | null = null;
 
-  get incomeRows(): BreakdownRow[] {
+  get tiles() {
     if (!this.result) return [];
-    const rows: BreakdownRow[] = [
-      { label: 'Basic Salary', value: this.result.inputs.basicSalary },
+    return [
+      { label: 'Gross Salary',     value: this.result.grossSalary,    cls: 'text-gray-800' },
+      { label: 'APIT Tax',         value: this.result.apitTax,        cls: 'text-red-500'  },
+      { label: 'Employee EPF (8%)',value: this.result.employeeEpf,    cls: 'text-red-500'  },
+      { label: 'Employer Cost',    value: this.result.employerCost,   cls: 'text-gray-800' },
     ];
-    if ((this.result.inputs.fixedAllowances ?? 0) > 0)
-      rows.push({ label: 'Fixed Allowances', value: this.result.inputs.fixedAllowances ?? 0, indent: true });
-    if ((this.result.inputs.transportAllowance ?? 0) > 0)
-      rows.push({ label: 'Transport Allowance', value: this.result.inputs.transportAllowance ?? 0, indent: true });
-    if ((this.result.inputs.dataAllowance ?? 0) > 0)
-      rows.push({ label: 'Data Allowance', value: this.result.inputs.dataAllowance ?? 0, indent: true });
-    if ((this.result.inputs.otherAllowances ?? 0) > 0)
-      rows.push({ label: 'Other Allowances', value: this.result.inputs.otherAllowances ?? 0, indent: true });
-    if (this.result.peggingAllowance > 0)
-      rows.push({ label: 'Pegging Allowance', value: this.result.peggingAllowance, indent: true, highlight: 'positive' });
-    rows.push({ label: 'Gross Salary', value: this.result.grossSalary, bold: true });
+  }
+
+  get rows(): Row[] {
+    if (!this.result) return [];
+    const r = this.result;
+    const rows: Row[] = [
+      { label: 'Basic Salary',       value: r.inputs.basicSalary },
+    ];
+    if ((r.inputs.fixedAllowances    ?? 0) > 0) rows.push({ label: 'Fixed Allowances',    value: r.inputs.fixedAllowances    ?? 0, sub: true });
+    if ((r.inputs.transportAllowance ?? 0) > 0) rows.push({ label: 'Transport Allowance', value: r.inputs.transportAllowance ?? 0, sub: true });
+    if ((r.inputs.dataAllowance      ?? 0) > 0) rows.push({ label: 'Data Allowance',      value: r.inputs.dataAllowance      ?? 0, sub: true });
+    if ((r.inputs.otherAllowances    ?? 0) > 0) rows.push({ label: 'Other Allowances',    value: r.inputs.otherAllowances    ?? 0, sub: true });
+    if (r.peggingAllowance > 0)                  rows.push({ label: 'Pegging Allowance',   value: r.peggingAllowance,              sub: true, color: 'green' });
+    rows.push({ label: 'Gross Salary',     value: r.grossSalary,    bold: true, separator: true });
+    rows.push({ label: 'Employee EPF (8%)',value: r.employeeEpf,    color: 'red', sub: true });
+    rows.push({ label: 'APIT Tax',         value: r.apitTax,        color: 'red', sub: true });
+    rows.push({ label: 'Taxable Income',   value: r.taxableIncome,  sub: true });
+    rows.push({ label: 'Take-Home Salary', value: r.takeHomeSalary, bold: true, color: 'green', separator: true });
+    rows.push({ label: 'Employer EPF (12%)', value: r.employerEpf,  color: 'red', sub: true, separator: true });
+    rows.push({ label: 'Employer ETF (3%)', value: r.employerEtf,   color: 'red', sub: true });
+    rows.push({ label: 'Total Employer Cost', value: r.employerCost, bold: true });
     return rows;
-  }
-
-  get deductionRows(): BreakdownRow[] {
-    if (!this.result) return [];
-    return [
-      { label: 'Employee EPF (8%)', value: this.result.employeeEpf, highlight: 'negative' },
-      { label: 'APIT Tax', value: this.result.apitTax, highlight: 'negative' },
-      { label: 'Taxable Income', value: this.result.taxableIncome, indent: true },
-    ];
-  }
-
-  get summaryRows(): BreakdownRow[] {
-    if (!this.result) return [];
-    return [
-      { label: 'Take-Home Salary', value: this.result.takeHomeSalary, bold: true, highlight: 'positive' },
-    ];
-  }
-
-  get employerRows(): BreakdownRow[] {
-    if (!this.result) return [];
-    return [
-      { label: 'Gross Salary', value: this.result.grossSalary },
-      { label: 'Employer EPF (12%)', value: this.result.employerEpf, highlight: 'negative' },
-      { label: 'Employer ETF (3%)', value: this.result.employerEtf, highlight: 'negative' },
-      { label: 'Total Employer Cost', value: this.result.employerCost, bold: true },
-    ];
   }
 }

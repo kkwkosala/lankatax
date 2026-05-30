@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'npm:@supabase/supabase-js@^2';
 import { handleCors } from '../_shared/cors.ts';
 import { errorResponse, jsonResponse, validationError } from '../_shared/response.ts';
 import { getAuthenticatedUser, requireAdmin } from '../_shared/auth.ts';
@@ -23,7 +23,7 @@ Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
   const path = url.pathname.split('/').filter(Boolean);
 
-  // ── GET /admin-tax-rules ─ list tax years, slabs, rules ──────────────────
+  // â”€â”€ GET /admin-tax-rules â”€ list tax years, slabs, rules â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (req.method === 'GET') {
     const resource = url.searchParams.get('resource') ?? 'overview';
 
@@ -78,7 +78,7 @@ Deno.serve(async (req: Request) => {
     return errorResponse('Unknown resource. Use: overview | years | slabs | rules', 'UNKNOWN_RESOURCE', 400);
   }
 
-  // ── POST /admin-tax-rules — create slab, rule, or tax year ───────────────
+  // â”€â”€ POST /admin-tax-rules â€” create slab, rule, or tax year â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (req.method === 'POST') {
     let body: Record<string, unknown>;
     try {
@@ -89,7 +89,7 @@ Deno.serve(async (req: Request) => {
 
     const action = body.action as string;
 
-    // ── Create new tax year ──
+    // â”€â”€ Create new tax year â”€â”€
     if (action === 'create_year') {
       const errors: Record<string, string> = {};
       if (!body.label) errors.label = 'Required';
@@ -127,7 +127,7 @@ Deno.serve(async (req: Request) => {
       return jsonResponse(data, 201);
     }
 
-    // ── Create new tax slab ──
+    // â”€â”€ Create new tax slab â”€â”€
     if (action === 'create_slab') {
       const errors: Record<string, string> = {};
       if (!body.taxYearId) errors.taxYearId = 'Required';
@@ -165,7 +165,7 @@ Deno.serve(async (req: Request) => {
       return jsonResponse(data, 201);
     }
 
-    // ── Create new tax rule ──
+    // â”€â”€ Create new tax rule â”€â”€
     if (action === 'create_rule') {
       const errors: Record<string, string> = {};
       if (!body.ruleType) errors.ruleType = 'Required';
