@@ -52,6 +52,7 @@ export interface EngineInput {
 export interface EngineResult {
   peggingAllowance: number;
   grossSalary: number;
+  epfBase: number;       // Basic salary only — EPF/ETF base
   employeeEpf: number;
   monthlyRelief: number;
   taxableIncome: number;
@@ -173,8 +174,9 @@ export function runEngine(
   // Step 2 — Gross Salary
   const grossSalary = round2(basic + fixed + transport + data + other + peggingAllowance);
 
-  // Step 3 — Employee EPF (8% of gross)
-  const employeeEpf = round2(grossSalary * rates.epfEmployeeRate);
+  // Step 3 — Employee EPF (8% of basic salary only — allowances excluded per Sri Lankan EPF law)
+  const epfBase = basic;
+  const employeeEpf = round2(epfBase * rates.epfEmployeeRate);
 
   // Step 4 — Taxable Income
   // Direct-formula slabs (2025/2026+): APIT applied to gross; personal relief embedded in fixedAmount.
@@ -191,9 +193,9 @@ export function runEngine(
   // Step 6 — Take-Home Salary
   const takeHomeSalary = Math.max(0, round2(grossSalary - employeeEpf - apitTax));
 
-  // Step 7 — Employer Costs
-  const employerEpf = round2(grossSalary * rates.epfEmployerRate);
-  const employerEtf = round2(grossSalary * rates.etfEmployerRate);
+  // Step 7 — Employer Costs (EPF/ETF on basic salary only)
+  const employerEpf = round2(epfBase * rates.epfEmployerRate);
+  const employerEtf = round2(epfBase * rates.etfEmployerRate);
   const employerCost = round2(grossSalary + employerEpf + employerEtf);
 
   // Step 8 — USD Equivalent
@@ -205,6 +207,7 @@ export function runEngine(
   return {
     peggingAllowance,
     grossSalary,
+    epfBase,
     employeeEpf,
     monthlyRelief,
     taxableIncome,

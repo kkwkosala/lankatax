@@ -94,9 +94,13 @@ interface Row {
 
         <!-- Rate badges -->
         <div class="mt-3 flex flex-wrap gap-2">
-          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">EPF (Employee) {{ result.epfEmployeeRate * 100 }}%</span>
-          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">EPF (Employer) {{ result.epfEmployerRate * 100 }}%</span>
-          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">ETF {{ result.etfEmployerRate * 100 }}%</span>
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">EPF Employee {{ result.epfEmployeeRate * 100 }}% on basic</span>
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">EPF Employer {{ result.epfEmployerRate * 100 }}% on basic</span>
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">ETF {{ result.etfEmployerRate * 100 }}% on basic</span>
+          <span *ngIf="result.epfBase !== result.grossSalary"
+            class="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full">
+            EPF/ETF base: {{ result.epfBase | lkrCurrency }}
+          </span>
         </div>
 
         <p class="mt-3 text-xs text-gray-300">{{ result.disclaimer }}</p>
@@ -126,13 +130,13 @@ export class TaxBreakdownCardComponent {
     if ((r.inputs.dataAllowance      ?? 0) > 0) rows.push({ label: 'Data Allowance',      value: r.inputs.dataAllowance      ?? 0, sub: true });
     if ((r.inputs.otherAllowances    ?? 0) > 0) rows.push({ label: 'Other Allowances',    value: r.inputs.otherAllowances    ?? 0, sub: true });
     if (r.peggingAllowance > 0)                  rows.push({ label: 'Pegging Allowance',   value: r.peggingAllowance,              sub: true, color: 'green' });
-    rows.push({ label: 'Gross Salary',        value: r.grossSalary,    bold: true, separator: true });
-    rows.push({ label: 'Employee EPF (8%)',   value: r.employeeEpf,    color: 'red', sub: true });
-    rows.push({ label: 'APIT Tax',            value: r.apitTax,        color: 'red', sub: true });
-    rows.push({ label: 'Take-Home Salary',    value: r.takeHomeSalary, bold: true, color: 'green', separator: true });
-    rows.push({ label: 'Employer EPF (12%)',  value: r.employerEpf,    color: 'red', sub: true, separator: true });
-    rows.push({ label: 'Employer ETF (3%)',   value: r.employerEtf,    color: 'red', sub: true });
-    rows.push({ label: 'Total Employer Cost', value: r.employerCost,   bold: true });
+    rows.push({ label: 'Gross Salary',             value: r.grossSalary,    bold: true, separator: true });
+    rows.push({ label: `Employee EPF (${r.epfEmployeeRate*100}% of basic)`, value: r.employeeEpf, color: 'red', sub: true });
+    rows.push({ label: 'APIT Tax',                  value: r.apitTax,        color: 'red', sub: true });
+    rows.push({ label: 'Take-Home Salary',           value: r.takeHomeSalary, bold: true, color: 'green', separator: true });
+    rows.push({ label: `Employer EPF (${r.epfEmployerRate*100}% of basic)`, value: r.employerEpf, color: 'red', sub: true, separator: true });
+    rows.push({ label: `Employer ETF (${r.etfEmployerRate*100}% of basic)`, value: r.employerEtf, color: 'red', sub: true });
+    rows.push({ label: 'Total Employer Cost',        value: r.employerCost,   bold: true });
     return rows;
   }
 }

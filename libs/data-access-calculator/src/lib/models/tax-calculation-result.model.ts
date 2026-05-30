@@ -12,6 +12,7 @@ export interface TaxCalculationResult {
   inputs: TaxCalculationRequest;
   peggingAllowance: number;
   grossSalary: number;
+  epfBase: number;       // Basic salary — EPF/ETF are calculated on this only
   employeeEpf: number;
   taxableIncome: number;
   apitTax: number;

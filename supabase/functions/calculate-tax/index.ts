@@ -225,6 +225,7 @@ Deno.serve(async (req: Request) => {
     inputs: body,
     peggingAllowance: engineResult.peggingAllowance,
     grossSalary: engineResult.grossSalary,
+    epfBase: engineResult.epfBase,
     employeeEpf: engineResult.employeeEpf,
     taxableIncome: engineResult.taxableIncome,
     apitTax: engineResult.apitTax,
