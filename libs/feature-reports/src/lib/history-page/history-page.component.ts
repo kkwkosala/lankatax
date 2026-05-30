@@ -75,8 +75,8 @@ import { LkrCurrencyPipe, LoadingSpinnerComponent } from '@lankatax/ui-shared';
         >
           <!-- Date -->
           <div class="col-span-1">
-            <p class="font-medium text-gray-800">{{ item.created_at | date:'d MMM yyyy' }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">{{ item.created_at | date:'h:mm a' }}</p>
+            <p class="font-medium text-gray-800">{{ item.calculated_at | date:'d MMM yyyy' }}</p>
+            <p class="text-xs text-gray-400 mt-0.5">{{ item.calculated_at | date:'h:mm a' }}</p>
           </div>
 
           <!-- Tax Year + pegging badge -->

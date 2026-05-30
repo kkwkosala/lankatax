@@ -89,13 +89,13 @@ export class TaxCalculatorApiService {
       take(1),
       switchMap((session) => {
         const fields = [
-          'id', 'created_at', 'tax_year_label',
+          'id', 'calculated_at', 'tax_year_label',
           'basic_salary', 'gross_salary', 'take_home_salary',
           'apit_tax', 'employee_epf', 'employer_cost',
           'pegging_enabled', 'pegging_allowance',
         ].join(',');
         return this.http.get<CalculationHistoryItem[]>(
-          `${environment.supabaseUrl}/rest/v1/salary_calculations?select=${fields}&order=created_at.desc&limit=50`,
+          `${environment.supabaseUrl}/rest/v1/salary_calculations?select=${fields}&order=calculated_at.desc&limit=50`,
           {
             headers: {
               apikey: environment.supabaseAnonKey,

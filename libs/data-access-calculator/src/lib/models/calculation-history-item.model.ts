@@ -1,6 +1,6 @@
 export interface CalculationHistoryItem {
   id: string;
-  created_at: string;
+  calculated_at: string;
   tax_year_label: string;
   basic_salary: number;
   gross_salary: number;
