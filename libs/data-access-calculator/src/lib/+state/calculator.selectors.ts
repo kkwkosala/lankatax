@@ -7,3 +7,6 @@ export const selectCalculationResult = createSelector(selectCalculatorState, (s)
 export const selectCalculatorLoading = createSelector(selectCalculatorState, (s) => s.loading);
 export const selectCalculatorError = createSelector(selectCalculatorState, (s) => s.error);
 export const selectLastRequest = createSelector(selectCalculatorState, (s) => s.lastRequest);
+export const selectIsSaving = createSelector(selectCalculatorState, (s) => s.saving);
+export const selectSaveError = createSelector(selectCalculatorState, (s) => s.saveError);
+export const selectSavedId = createSelector(selectCalculatorState, (s) => s.savedId);

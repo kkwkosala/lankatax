@@ -8,6 +8,9 @@ export interface CalculatorState {
   lastRequest: TaxCalculationRequest | null;
   loading: boolean;
   error: string | null;
+  saving: boolean;
+  saveError: string | null;
+  savedId: string | null;
 }
 
 export const initialCalculatorState: CalculatorState = {
@@ -15,6 +18,9 @@ export const initialCalculatorState: CalculatorState = {
   lastRequest: null,
   loading: false,
   error: null,
+  saving: false,
+  saveError: null,
+  savedId: null,
 };
 
 export const calculatorReducer = createReducer(
@@ -32,6 +38,8 @@ export const calculatorReducer = createReducer(
     result,
     loading: false,
     error: null,
+    savedId: null,
+    saveError: null,
   })),
 
   on(CalculatorActions.calculateFailure, (state, { error }) => ({
@@ -44,5 +52,32 @@ export const calculatorReducer = createReducer(
     ...state,
     result: null,
     error: null,
+  })),
+
+  on(CalculatorActions.saveCalculation, (state) => ({
+    ...state,
+    saving: true,
+    saveError: null,
+    savedId: null,
+  })),
+
+  on(CalculatorActions.saveCalculationSuccess, (state, { id }) => ({
+    ...state,
+    saving: false,
+    savedId: id,
+    saveError: null,
+  })),
+
+  on(CalculatorActions.saveCalculationFailure, (state, { error }) => ({
+    ...state,
+    saving: false,
+    saveError: error,
+  })),
+
+  on(CalculatorActions.clearSaveStatus, (state) => ({
+    ...state,
+    saving: false,
+    saveError: null,
+    savedId: null,
   }))
 );
