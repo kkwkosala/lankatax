@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@supabase/supabase-js@^2';
+﻿import { createClient } from 'npm:@supabase/supabase-js@^2';
 import { handleCors } from '../_shared/cors.ts';
 import { errorResponse, jsonResponse, validationError } from '../_shared/response.ts';
 import { getAuthenticatedUser } from '../_shared/auth.ts';
@@ -23,7 +23,7 @@ Deno.serve(async (req: Request) => {
   const startTime = Date.now();
 
   // â”€â”€ Auth (optional â€” anonymous users get no save) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const { user, supabase } = await getAuthenticatedUser(req, false);
+  const { user } = await getAuthenticatedUser(req, false);
 
   // â”€â”€ Parse + Validate Request â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let body: TaxCalculationRequest;
@@ -170,55 +170,6 @@ Deno.serve(async (req: Request) => {
     slabOrder: s.slabOrder,
   }));
 
-  // â”€â”€ Save Calculation (authenticated users only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  let calculationId: string | undefined;
-  if (user) {
-    const { data: saved } = await supabase
-      .from('salary_calculations')
-      .insert({
-        user_id: user.id,
-        basic_salary: body.basicSalary,
-        fixed_allowances: body.fixedAllowances ?? 0,
-        transport_allowance: body.transportAllowance ?? 0,
-        data_allowance: body.dataAllowance ?? 0,
-        other_allowances: body.otherAllowances ?? 0,
-        tax_relief_annual: body.taxReliefAnnual ?? 0,
-        pegging_enabled: body.pegging?.enabled ?? false,
-        pegging_base_rate: body.pegging?.baseRate ?? null,
-        pegging_usd_value: body.pegging?.peggedUsdValue ?? null,
-        pegging_current_rate: body.pegging?.currentRate ?? null,
-        exchange_rate_used: exchangeRate,
-        pegging_allowance: engineResult.peggingAllowance,
-        gross_salary: engineResult.grossSalary,
-        employee_epf: engineResult.employeeEpf,
-        taxable_income: engineResult.taxableIncome,
-        apit_tax: engineResult.apitTax,
-        take_home_salary: engineResult.takeHomeSalary,
-        employer_epf: engineResult.employerEpf,
-        employer_etf: engineResult.employerEtf,
-        employer_cost: engineResult.employerCost,
-        usd_equivalent: engineResult.usdEquivalent,
-        tax_year_label: taxYearData.label,
-        tax_slabs_snapshot: taxSlabsSnapshot,
-        epf_employee_rate: rates.epfEmployeeRate,
-        epf_employer_rate: rates.epfEmployerRate,
-        etf_employer_rate: rates.etfEmployerRate,
-      })
-      .select('id')
-      .single();
-
-    if (saved) {
-      calculationId = saved.id;
-      await logAuditEvent({
-        entityType: 'salary_calculation',
-        entityId: calculationId,
-        action: 'CALCULATION',
-        actorId: user.id,
-        actorRole: user.role,
-        newValues: { taxYear: taxYearData.label, grossSalary: engineResult.grossSalary },
-      });
-    }
-  }
 
   // â”€â”€ Build Response â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const result: TaxCalculationResult = {
@@ -240,7 +191,6 @@ Deno.serve(async (req: Request) => {
     epfEmployeeRate: rates.epfEmployeeRate,
     epfEmployerRate: rates.epfEmployerRate,
     etfEmployerRate: rates.etfEmployerRate,
-    calculationId,
     calculatedAt: new Date().toISOString(),
     disclaimer: DISCLAIMER,
   };
@@ -251,7 +201,7 @@ Deno.serve(async (req: Request) => {
     functionName: 'calculate-tax',
     userId: user?.id ?? 'anonymous',
     taxYear: taxYearData.label,
-    saved: !!calculationId,
+    saved: false,
     durationMs: Date.now() - startTime,
   }));
 
