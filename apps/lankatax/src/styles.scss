@@ -1,0 +1,32 @@
+@use '@angular/material' as mat;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@include mat.core();
+
+$lankatax-primary: mat.define-palette(mat.$orange-palette, 700);
+$lankatax-accent:  mat.define-palette(mat.$red-palette, 800);
+$lankatax-warn:    mat.define-palette(mat.$red-palette);
+
+$lankatax-theme: mat.define-light-theme((
+  color: (
+    primary: $lankatax-primary,
+    accent:  $lankatax-accent,
+    warn:    $lankatax-warn
+  ),
+  typography: mat.define-typography-config(),
+  density: 0
+));
+
+@include mat.all-component-themes($lankatax-theme);
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}

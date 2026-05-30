@@ -1,0 +1,35 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@lankatax/feature-calculator": ["libs/feature-calculator/src/index.ts"],
+      "@lankatax/feature-reports": ["libs/feature-reports/src/index.ts"],
+      "@lankatax/feature-budget": ["libs/feature-budget/src/index.ts"],
+      "@lankatax/feature-admin": ["libs/feature-admin/src/index.ts"],
+      "@lankatax/feature-auth": ["libs/feature-auth/src/index.ts"],
+      "@lankatax/ui-salary-form": ["libs/ui-salary-form/src/index.ts"],
+      "@lankatax/ui-charts": ["libs/ui-charts/src/index.ts"],
+      "@lankatax/ui-tax-breakdown": ["libs/ui-tax-breakdown/src/index.ts"],
+      "@lankatax/ui-shared": ["libs/ui-shared/src/index.ts"],
+      "@lankatax/data-access-calculator": ["libs/data-access-calculator/src/index.ts"],
+      "@lankatax/data-access-reports": ["libs/data-access-reports/src/index.ts"],
+      "@lankatax/data-access-budget": ["libs/data-access-budget/src/index.ts"],
+      "@lankatax/data-access-admin": ["libs/data-access-admin/src/index.ts"],
+      "@lankatax/data-access-auth": ["libs/data-access-auth/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

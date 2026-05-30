@@ -1,0 +1,13 @@
+{
+  "name": "feature-auth",
+  "projectType": "library",
+  "sourceRoot": "libs/feature-auth/src",
+  "prefix": "lt",
+  "tags": ["type:feature", "scope:auth"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {"lintFilePatterns": ["libs/feature-auth/**/*.ts","libs/feature-auth/**/*.html"]}
+    }
+  }
+}
