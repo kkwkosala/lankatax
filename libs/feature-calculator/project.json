@@ -1,0 +1,13 @@
+{
+  "name": "feature-calculator",
+  "projectType": "library",
+  "sourceRoot": "libs/feature-calculator/src",
+  "prefix": "lt",
+  "tags": ["type:feature", "scope:calculator"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {"lintFilePatterns": ["libs/feature-calculator/**/*.ts","libs/feature-calculator/**/*.html"]}
+    }
+  }
+}

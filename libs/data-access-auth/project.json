@@ -1,0 +1,15 @@
+{
+  "name": "data-access-auth",
+  "projectType": "library",
+  "sourceRoot": "libs/data-access-auth/src",
+  "prefix": "lankatax",
+  "tags": ["type:data-access", "scope:auth"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["libs/data-access-auth/**/*.ts"]
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "lankatax",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/lankatax/src",
+  "tags": ["type:app"],
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/lankatax",
+        "index": "apps/lankatax/src/index.html",
+        "browser": "apps/lankatax/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/lankatax/tsconfig.app.json",
+        "assets": [{"glob": "**/*","input": "apps/lankatax/src/assets","output": "assets"},{"glob": "favicon.ico","input": "apps/lankatax/src","output": ""}],
+        "styles": ["apps/lankatax/src/styles.scss"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [{"type": "initial","maximumWarning": "500kb","maximumError": "1mb"},{"type": "anyComponentStyle","maximumWarning": "2kb","maximumError": "4kb"}],
+          "outputHashing": "all",
+          "fileReplacements": [{"replace": "apps/lankatax/src/environments/environment.ts","with": "apps/lankatax/src/environments/environment.production.ts"}]
+        },
+        "development": {"optimization": false,"extractLicenses": false,"sourceMap": true}
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {"buildTarget": "lankatax:build:production"},
+        "development": {"buildTarget": "lankatax:build:development"}
+      },
+      "defaultConfiguration": "development"
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {"lintFilePatterns": ["apps/lankatax/**/*.ts","apps/lankatax/**/*.html"]}
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/lankatax"],
+      "options": {"jestConfig": "apps/lankatax/jest.config.ts"}
+    }
+  }
+}
