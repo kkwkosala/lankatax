@@ -150,3 +150,6 @@ dist/
 
 .angular/
 .nx/
+
+# Local Angular environment with real credentials — never commit
+apps/lankatax/src/environments/environment.local.ts
