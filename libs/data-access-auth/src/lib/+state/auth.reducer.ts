@@ -33,6 +33,7 @@ export const authReducer = createReducer(
     session,
     loading: false,
     error: null,
+    sessionRestored: true,
   })),
 
   on(AuthActions.registerSuccess, (state, { user }) => ({
@@ -40,6 +41,7 @@ export const authReducer = createReducer(
     user,
     loading: false,
     error: null,
+    sessionRestored: true,
   })),
 
   on(AuthActions.loginFailure, AuthActions.registerFailure, (state, { error }) => ({
