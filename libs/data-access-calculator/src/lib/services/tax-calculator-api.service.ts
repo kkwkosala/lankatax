@@ -38,7 +38,12 @@ export class TaxCalculatorApiService {
     );
   }
 
-  saveCalculation(result: TaxCalculationResult): Observable<{ id: string; createdAt: string }> {
+  saveCalculation(
+    result: TaxCalculationResult,
+    personName: string,
+    calculationMonth: string,
+    comment: string,
+  ): Observable<{ id: string; calculatedAt: string }> {
     return this.store.select(selectCurrentSession).pipe(
       take(1),
       switchMap((session) => {
@@ -74,8 +79,11 @@ export class TaxCalculatorApiService {
           epfEmployeeRate:    result.epfEmployeeRate,
           epfEmployerRate:    result.epfEmployerRate,
           etfEmployerRate:    result.etfEmployerRate,
+          personName:         personName || null,
+          calculationMonth:   calculationMonth || null,
+          comment:            comment || null,
         };
-        return this.http.post<{ id: string; createdAt: string }>(
+        return this.http.post<{ id: string; calculatedAt: string }>(
           `${this.baseUrl}/save-calculation`,
           body,
           { headers }
@@ -93,6 +101,7 @@ export class TaxCalculatorApiService {
           'basic_salary', 'gross_salary', 'take_home_salary',
           'apit_tax', 'employee_epf', 'employer_cost',
           'pegging_enabled', 'pegging_allowance',
+          'person_name', 'calculation_month', 'comment',
         ].join(',');
         return this.http.get<CalculationHistoryItem[]>(
           `${environment.supabaseUrl}/rest/v1/salary_calculations?select=${fields}&order=calculated_at.desc&limit=50`,

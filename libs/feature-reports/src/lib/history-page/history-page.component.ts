@@ -17,7 +17,7 @@ import { LkrCurrencyPipe, LoadingSpinnerComponent } from '@lankatax/ui-shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, RouterLink, MatIconModule, LkrCurrencyPipe, LoadingSpinnerComponent],
   template: `
-    <div class="max-w-screen-lg mx-auto">
+    <div class="max-w-screen-xl mx-auto">
 
       <!-- Header -->
       <div class="mb-6 flex items-center justify-between">
@@ -32,10 +32,8 @@ import { LkrCurrencyPipe, LoadingSpinnerComponent } from '@lankatax/ui-shared';
         </a>
       </div>
 
-      <!-- Loading -->
       <lt-loading-spinner *ngIf="loading$ | async"></lt-loading-spinner>
 
-      <!-- Error -->
       <div *ngIf="(error$ | async) as err"
         class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700 flex items-center gap-2">
         <mat-icon class="text-red-400 text-base shrink-0">error_outline</mat-icon>
@@ -59,53 +57,72 @@ import { LkrCurrencyPipe, LoadingSpinnerComponent } from '@lankatax/ui-shared';
         class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
 
         <!-- Table header -->
-        <div class="grid grid-cols-5 gap-4 px-5 py-3 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-          <div class="col-span-1">Date</div>
-          <div class="col-span-1">Tax Year</div>
-          <div class="col-span-1 text-right">Gross Salary</div>
-          <div class="col-span-1 text-right">Take-Home</div>
-          <div class="col-span-1 text-right">APIT Tax</div>
+        <div class="grid grid-cols-12 gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+          <div class="col-span-2">Date Saved</div>
+          <div class="col-span-2">Person</div>
+          <div class="col-span-2">Month</div>
+          <div class="col-span-2 text-right">Gross</div>
+          <div class="col-span-2 text-right">Take-Home</div>
+          <div class="col-span-2 text-right">APIT Tax</div>
         </div>
 
-        <!-- Rows -->
-        <div *ngFor="let item of history$ | async; let i = index; let last = last"
-          class="grid grid-cols-5 gap-4 px-5 py-4 items-center text-sm hover:bg-gray-50 transition-colors"
-          [class.border-b]="!last"
-          [class.border-gray-100]="!last"
-        >
-          <!-- Date -->
-          <div class="col-span-1">
-            <p class="font-medium text-gray-800">{{ item.calculated_at | date:'d MMM yyyy' }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">{{ item.calculated_at | date:'h:mm a' }}</p>
+        <ng-container *ngFor="let item of history$ | async; let last = last">
+          <!-- Main row -->
+          <div
+            class="grid grid-cols-12 gap-3 px-5 py-3 items-start text-sm hover:bg-gray-50 transition-colors"
+            [class.border-b]="!last"
+            [class.border-gray-100]="!last"
+          >
+            <!-- Date saved -->
+            <div class="col-span-2">
+              <p class="font-medium text-gray-800">{{ item.calculated_at | date:'d MMM yyyy' }}</p>
+              <p class="text-xs text-gray-400 mt-0.5">{{ item.calculated_at | date:'h:mm a' }}</p>
+            </div>
+
+            <!-- Person + Tax Year badge -->
+            <div class="col-span-2">
+              <p class="font-medium text-gray-800">{{ item.person_name || '—' }}</p>
+              <div class="flex flex-wrap gap-1 mt-0.5">
+                <span class="text-xs text-gray-400">{{ item.tax_year_label }}</span>
+                <span *ngIf="item.pegging_enabled"
+                  class="px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">Pegging</span>
+              </div>
+            </div>
+
+            <!-- Month -->
+            <div class="col-span-2">
+              <p class="text-gray-700">
+                {{ item.calculation_month ? (item.calculation_month | date:'MMM yyyy') : '—' }}
+              </p>
+            </div>
+
+            <!-- Gross -->
+            <div class="col-span-2 text-right text-gray-800">
+              {{ item.gross_salary | lkrCurrency }}
+            </div>
+
+            <!-- Take-Home -->
+            <div class="col-span-2 text-right font-semibold text-green-600">
+              {{ item.take_home_salary | lkrCurrency }}
+            </div>
+
+            <!-- APIT -->
+            <div class="col-span-2 text-right text-red-500">
+              {{ item.apit_tax | lkrCurrency }}
+            </div>
           </div>
 
-          <!-- Tax Year + pegging badge -->
-          <div class="col-span-1 flex items-center gap-1.5 flex-wrap">
-            <span class="text-gray-700 font-medium">{{ item.tax_year_label }}</span>
-            <span *ngIf="item.pegging_enabled"
-              class="px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
-              Pegging
-            </span>
+          <!-- Comment row (if present) -->
+          <div *ngIf="item.comment"
+            class="px-5 pb-3 -mt-1 text-xs text-gray-400 italic flex items-start gap-1"
+            [class.border-b]="!last"
+            [class.border-gray-100]="!last">
+            <mat-icon class="text-gray-300 text-xs mt-0.5 shrink-0">chat_bubble_outline</mat-icon>
+            {{ item.comment }}
           </div>
-
-          <!-- Gross Salary -->
-          <div class="col-span-1 text-right text-gray-800">
-            {{ item.gross_salary | lkrCurrency }}
-          </div>
-
-          <!-- Take-Home -->
-          <div class="col-span-1 text-right font-semibold text-green-600">
-            {{ item.take_home_salary | lkrCurrency }}
-          </div>
-
-          <!-- APIT Tax -->
-          <div class="col-span-1 text-right text-red-500">
-            {{ item.apit_tax | lkrCurrency }}
-          </div>
-        </div>
+        </ng-container>
       </div>
 
-      <!-- Row count footer -->
       <p *ngIf="(history$ | async)?.length"
         class="mt-3 text-xs text-gray-400 text-right">
         Showing {{ (history$ | async)?.length }} calculation(s)

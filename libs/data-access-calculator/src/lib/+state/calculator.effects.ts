@@ -29,8 +29,8 @@ export class CalculatorEffects {
   saveCalculation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CalculatorActions.saveCalculation),
-      exhaustMap(({ result }) =>
-        this.api.saveCalculation(result).pipe(
+      exhaustMap(({ result, personName, calculationMonth, comment }) =>
+        this.api.saveCalculation(result, personName, calculationMonth, comment).pipe(
           map(({ id }) => CalculatorActions.saveCalculationSuccess({ id })),
           catchError((err) =>
             of(CalculatorActions.saveCalculationFailure({

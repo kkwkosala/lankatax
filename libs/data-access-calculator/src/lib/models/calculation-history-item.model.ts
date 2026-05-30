@@ -10,4 +10,7 @@ export interface CalculationHistoryItem {
   employer_cost: number;
   pegging_enabled: boolean;
   pegging_allowance: number;
+  person_name: string | null;
+  calculation_month: string | null;
+  comment: string | null;
 }
