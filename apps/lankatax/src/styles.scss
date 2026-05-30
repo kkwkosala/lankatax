@@ -3,24 +3,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@include mat.core();
+/* Angular Material M3 theme */
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$orange-palette,
+      tertiary: mat.$red-palette,
+    ),
+    typography: (
+      plain-family: 'Inter',
+      brand-family: 'Inter',
+    ),
+    density: 0,
+  ));
+}
 
-$lankatax-primary: mat.define-palette(mat.$orange-palette, 700);
-$lankatax-accent:  mat.define-palette(mat.$red-palette, 800);
-$lankatax-warn:    mat.define-palette(mat.$red-palette);
-
-$lankatax-theme: mat.define-light-theme((
-  color: (
-    primary: $lankatax-primary,
-    accent:  $lankatax-accent,
-    warn:    $lankatax-warn
-  ),
-  typography: mat.define-typography-config(),
-  density: 0
-));
-
-@include mat.all-component-themes($lankatax-theme);
-
+/* Global overrides */
 html, body {
   height: 100%;
   margin: 0;

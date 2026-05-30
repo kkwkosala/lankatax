@@ -4,6 +4,7 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   OnInit,
+  inject,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -154,9 +155,8 @@ function nonNegativeValidator(control: AbstractControl) {
 export class SalaryInputFormComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<SalaryFormValue>();
 
+  private readonly fb = inject(FormBuilder);
   form!: FormGroup;
-
-  constructor(private readonly fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
