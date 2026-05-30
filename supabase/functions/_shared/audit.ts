@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'npm:@supabase/supabase-js@^2';
 
 interface AuditPayload {
   entityType: string;
@@ -14,7 +14,7 @@ interface AuditPayload {
 
 /**
  * Append an entry to the audit_logs table using the service role key.
- * Never throws — audit failure must not break the main operation.
+ * Never throws â€” audit failure must not break the main operation.
  */
 export async function logAuditEvent(payload: AuditPayload): Promise<void> {
   try {

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'npm:@supabase/supabase-js@^2';
 import { handleCors } from '../_shared/cors.ts';
 import { errorResponse, jsonResponse, validationError } from '../_shared/response.ts';
 import { getAuthenticatedUser } from '../_shared/auth.ts';
@@ -22,10 +22,10 @@ Deno.serve(async (req: Request) => {
 
   const startTime = Date.now();
 
-  // ── Auth (optional — anonymous users get no save) ────────────────────────
+  // â”€â”€ Auth (optional â€” anonymous users get no save) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const { user, supabase } = await getAuthenticatedUser(req, false);
 
-  // ── Parse + Validate Request ─────────────────────────────────────────────
+  // â”€â”€ Parse + Validate Request â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let body: TaxCalculationRequest;
   try {
     body = await req.json();
@@ -65,7 +65,7 @@ Deno.serve(async (req: Request) => {
   }
   if (Object.keys(errors).length > 0) return validationError(errors);
 
-  // ── Load Tax Configuration from DB ───────────────────────────────────────
+  // â”€â”€ Load Tax Configuration from DB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const serviceClient = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -154,14 +154,14 @@ Deno.serve(async (req: Request) => {
     if (rateRow) exchangeRate = Number(rateRow.rate);
   }
 
-  // ── Run Engine ────────────────────────────────────────────────────────────
+  // â”€â”€ Run Engine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const engineResult = runEngine(
     { ...body, exchangeRate: exchangeRate ?? undefined },
     slabs,
     rates
   );
 
-  // ── Build Slab Snapshot ───────────────────────────────────────────────────
+  // â”€â”€ Build Slab Snapshot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const taxSlabsSnapshot: TaxSlabSnapshot[] = slabs.map((s) => ({
     lowerBound: s.lowerBound,
     upperBound: s.upperBound,
@@ -170,7 +170,7 @@ Deno.serve(async (req: Request) => {
     slabOrder: s.slabOrder,
   }));
 
-  // ── Save Calculation (authenticated users only) ───────────────────────────
+  // â”€â”€ Save Calculation (authenticated users only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let calculationId: string | undefined;
   if (user) {
     const { data: saved } = await supabase
@@ -220,7 +220,7 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // ── Build Response ────────────────────────────────────────────────────────
+  // â”€â”€ Build Response â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const result: TaxCalculationResult = {
     inputs: body,
     peggingAllowance: engineResult.peggingAllowance,
