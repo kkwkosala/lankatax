@@ -1,4 +1,4 @@
-﻿import {
+import {
   Component,
   ChangeDetectionStrategy,
   inject,
@@ -13,7 +13,7 @@ import {
   selectCalculatorError,
 } from '@lankatax/data-access-calculator';
 import { SalaryInputFormComponent, SalaryFormValue } from '@lankatax/ui-salary-form';
-import { TaxBreakdownCardComponent } from '@lankatax/ui-tax-breakdown';
+import { TaxBreakdownCardComponent, TaxBracketsCardComponent } from '@lankatax/ui-tax-breakdown';
 import { DisclaimerBannerComponent, LoadingSpinnerComponent } from '@lankatax/ui-shared';
 import type { TaxCalculationRequest } from '@lankatax/data-access-calculator';
 
@@ -26,11 +26,12 @@ import type { TaxCalculationRequest } from '@lankatax/data-access-calculator';
     MatIconModule,
     SalaryInputFormComponent,
     TaxBreakdownCardComponent,
+    TaxBracketsCardComponent,
     DisclaimerBannerComponent,
     LoadingSpinnerComponent,
   ],
   template: `
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-screen-xl mx-auto">
       <!-- Header -->
       <div class="mb-5">
         <h1 class="text-2xl font-bold text-gray-900">Salary Tax Calculator</h1>
@@ -39,16 +40,17 @@ import type { TaxCalculationRequest } from '@lankatax/data-access-calculator';
 
       <lt-disclaimer-banner class="block mb-5"></lt-disclaimer-banner>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- 3-column card layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
 
-        <!-- Input Form -->
+        <!-- Card 1: Input Form -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <h2 class="text-base font-semibold text-gray-800 mb-4">Enter Salary Details</h2>
           <lt-salary-input-form (formSubmit)="onCalculate($event)"></lt-salary-input-form>
         </div>
 
-        <!-- Results -->
-        <div>
+        <!-- Card 2: Tax Breakdown Summary -->
+        <div class="min-h-[24rem]">
           <lt-loading-spinner *ngIf="loading$ | async"></lt-loading-spinner>
 
           <ng-container *ngIf="error$ | async as err">
@@ -73,11 +75,29 @@ import type { TaxCalculationRequest } from '@lankatax/data-access-calculator';
             *ngIf="!(result$ | async) && !(loading$ | async) && !(error$ | async)"
             class="flex flex-col items-center justify-center h-72 text-gray-300 text-center rounded-xl border-2 border-dashed border-gray-200"
           >
-            <span class="text-5xl mb-3">🇱🇰</span>
-            <p class="text-base font-medium text-gray-400">Enter salary details</p>
-            <p class="text-xs text-gray-300 mt-1">Your tax breakdown will appear here</p>
+            <span class="text-5xl mb-3">&#x1F4CA;</span>
+            <p class="text-base font-medium text-gray-400">Tax breakdown</p>
+            <p class="text-xs text-gray-300 mt-1">Appears after calculation</p>
           </div>
         </div>
+
+        <!-- Card 3: APIT Tax Brackets -->
+        <div class="min-h-[24rem]">
+          <lt-tax-brackets-card
+            *ngIf="(result$ | async) && !(loading$ | async)"
+            [result]="result$ | async"
+          ></lt-tax-brackets-card>
+
+          <div
+            *ngIf="!(result$ | async) && !(loading$ | async) && !(error$ | async)"
+            class="flex flex-col items-center justify-center h-72 text-gray-300 text-center rounded-xl border-2 border-dashed border-gray-200"
+          >
+            <span class="text-5xl mb-3">&#x1F9EE;</span>
+            <p class="text-base font-medium text-gray-400">APIT brackets</p>
+            <p class="text-xs text-gray-300 mt-1">Appears after calculation</p>
+          </div>
+        </div>
+
       </div>
     </div>
   `,
