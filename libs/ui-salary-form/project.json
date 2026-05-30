@@ -1,0 +1,13 @@
+{
+  "name": "ui-salary-form",
+  "projectType": "library",
+  "sourceRoot": "libs/ui-salary-form/src",
+  "prefix": "lt",
+  "tags": ["type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {"lintFilePatterns": ["libs/ui-salary-form/**/*.ts","libs/ui-salary-form/**/*.html"]}
+    }
+  }
+}

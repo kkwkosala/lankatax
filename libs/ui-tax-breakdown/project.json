@@ -1,0 +1,13 @@
+{
+  "name": "ui-tax-breakdown",
+  "projectType": "library",
+  "sourceRoot": "libs/ui-tax-breakdown/src",
+  "prefix": "lt",
+  "tags": ["type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {"lintFilePatterns": ["libs/ui-tax-breakdown/**/*.ts","libs/ui-tax-breakdown/**/*.html"]}
+    }
+  }
+}

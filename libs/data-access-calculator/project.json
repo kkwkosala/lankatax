@@ -1,0 +1,15 @@
+{
+  "name": "data-access-calculator",
+  "projectType": "library",
+  "sourceRoot": "libs/data-access-calculator/src",
+  "prefix": "lankatax",
+  "tags": ["type:data-access", "scope:calculator"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["libs/data-access-calculator/**/*.ts"]
+      }
+    }
+  }
+}
