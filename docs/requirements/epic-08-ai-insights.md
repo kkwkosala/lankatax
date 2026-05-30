@@ -1,5 +1,11 @@
 # EPIC 8 — AI Financial Insights
 
+> ⚠️ **REMOVED** — This epic has been removed from the product roadmap.
+> Reason: OpenAI API usage incurs per-call costs. Feature will not be implemented.
+> This file is retained for historical reference only.
+
+---
+
 **Epic Label:** `epic:ai-insights`  
 **Priority:** 🟢 Low  
 **Sprint:** 6  

@@ -46,7 +46,7 @@ supabase functions deploy save-calculation
 supabase functions deploy generate-report
 supabase functions deploy get-budget
 supabase functions deploy admin-tax-rules
-supabase functions deploy ai-insights
+supabase functions deploy audit-logs
 ```
 
 **Frontend (Vercel):**

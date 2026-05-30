@@ -39,7 +39,7 @@ cp .env.example .env.local
 # Fill in your values:
 # SUPABASE_URL=https://[your-project].supabase.co
 # SUPABASE_ANON_KEY=your-anon-key
-# OPENAI_API_KEY=sk-... (only for AI insights feature)
+# (AI insights feature removed — no external API costs)
 ```
 
 **Never commit `.env.local` — it is gitignored.**

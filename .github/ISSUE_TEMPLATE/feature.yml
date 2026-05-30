@@ -26,7 +26,6 @@ body:
         - "epic:tax-admin"
         - "epic:reporting"
         - "epic:auth"
-        - "epic:ai-insights"
         - "epic:budget"
         - "epic:audit"
     validations:
