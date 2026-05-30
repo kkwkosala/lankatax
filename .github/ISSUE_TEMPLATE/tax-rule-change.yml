@@ -1,0 +1,57 @@
+name: Tax Rule Change
+description: Update APIT/PAYE slabs, EPF/ETF rates, or other tax rule changes
+title: "[TAX-RULE] "
+labels: ["tax-rule-change", "priority:critical"]
+body:
+  - type: dropdown
+    id: rule-type
+    attributes:
+      label: Rule Type
+      options:
+        - "APIT/PAYE Slab Update"
+        - "EPF Rate Change"
+        - "ETF Rate Change"
+        - "Tax Relief Threshold Change"
+        - "New Allowance Type"
+        - "Pegging Rule Change"
+    validations:
+      required: true
+  - type: input
+    id: effective-date
+    attributes:
+      label: Effective Date
+      placeholder: "YYYY-MM-DD (e.g. 2025-04-01)"
+    validations:
+      required: true
+  - type: input
+    id: gazette-ref
+    attributes:
+      label: Gazette / IRD Reference
+      placeholder: "e.g. Extraordinary Gazette No. XXXX/XX"
+    validations:
+      required: true
+  - type: textarea
+    id: current-rules
+    attributes:
+      label: Current Rules
+      placeholder: Document the current tax slabs/rates being replaced
+    validations:
+      required: true
+  - type: textarea
+    id: new-rules
+    attributes:
+      label: New Rules
+      placeholder: |
+        New APIT slabs:
+        Income LKR 0 – 1,200,000: 0%
+        Income LKR 1,200,001 – 1,700,000: 6%
+        ...
+    validations:
+      required: true
+  - type: textarea
+    id: migration-notes
+    attributes:
+      label: Migration Notes
+      placeholder: |
+        - Migration file needed: supabase/migrations/YYYYMMDDHHMMSS_update_tax_slabs.sql
+        - Historical calculations: preserve (do not recompute) / recompute (explain why)

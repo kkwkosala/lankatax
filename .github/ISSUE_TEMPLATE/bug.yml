@@ -1,0 +1,50 @@
+name: Bug Report
+description: Report incorrect tax calculation or application bug
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - "critical — Wrong tax calculation"
+        - "high — Feature broken"
+        - "medium — UI issue"
+        - "low — Cosmetic / minor"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      placeholder: What happened vs what was expected?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Enter basic salary: LKR X
+        2. Enable pegging: Base X, Current Y, USD Z
+        3. Click Calculate
+        4. Observed: ...
+        5. Expected: ...
+    validations:
+      required: true
+  - type: textarea
+    id: tax-calc
+    attributes:
+      label: Tax Calculation Details (if applicable)
+      placeholder: |
+        Basic Salary:
+        Allowances:
+        Pegging enabled: Yes/No
+        Observed APIT:
+        Expected APIT (per IRD):
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Browser, OS, LankaTax version
