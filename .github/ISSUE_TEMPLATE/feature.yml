@@ -1,0 +1,67 @@
+name: Feature Request
+description: New feature or enhancement for LankaTax
+title: "[FE/BE/DB] "
+labels: ["feature"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue Type
+      options:
+        - "[DB] Database / Migration"
+        - "[BE] Backend — Edge Function"
+        - "[FE] Frontend — Angular"
+        - "[FULL] Full Stack"
+    validations:
+      required: true
+  - type: dropdown
+    id: epic
+    attributes:
+      label: Epic
+      options:
+        - "epic:tax-engine"
+        - "epic:salary-breakdown"
+        - "epic:pegging"
+        - "epic:usd-conversion"
+        - "epic:tax-admin"
+        - "epic:reporting"
+        - "epic:auth"
+        - "epic:ai-insights"
+        - "epic:budget"
+        - "epic:audit"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      placeholder: What should be built and why?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      placeholder: |
+        - [ ] Given ... When ... Then ...
+        - [ ] Given ... When ... Then ...
+    validations:
+      required: true
+  - type: textarea
+    id: tax-domain
+    attributes:
+      label: Tax Domain Impact (if applicable)
+      placeholder: |
+        Affected calculation step:
+        Effective date:
+        Tables affected:
+  - type: textarea
+    id: technical-notes
+    attributes:
+      label: Technical Notes
+      placeholder: Edge Function path, DB tables, Angular lib, NgRx changes
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      placeholder: "Blocked by: #N"
