@@ -87,10 +87,17 @@ interface Row {
 
         <!-- Basic USD Salary (only when pegging is active) -->
         <div *ngIf="result.inputs.pegging?.enabled && result.inputs.pegging?.baseRate"
-          class="mt-3 bg-blue-50 rounded-lg px-3 py-2 text-xs text-blue-700 flex items-center gap-2">
-          <mat-icon class="text-blue-400 text-sm">attach_money</mat-icon>
-          Basic USD Salary: <strong>USD {{ (result.inputs.basicSalary / result.inputs.pegging!.baseRate!) | number:'1.2-2' }}</strong>
-          &nbsp;@ LKR {{ result.inputs.pegging!.baseRate }}/USD (base rate)
+          class="mt-3 bg-blue-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+          <mat-icon class="text-blue-400 text-sm mt-0.5 shrink-0">attach_money</mat-icon>
+          <div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xs text-blue-600">Basic USD Salary:</span>
+              <span class="text-sm font-bold text-blue-800">USD {{ (result.inputs.basicSalary / result.inputs.pegging!.baseRate!) | number:'1.2-2' }}</span>
+            </div>
+            <p class="text-xs text-blue-400 mt-0.5">
+              {{ result.inputs.basicSalary | lkrCurrency }} ÷ LKR {{ result.inputs.pegging!.baseRate }}/USD (base rate)
+            </p>
+          </div>
         </div>
 
         <!-- Rate badges -->
