@@ -4,7 +4,6 @@ export interface SalaryFormValue {
   transportAllowance: number;
   dataAllowance: number;
   otherAllowances: number;
-  taxReliefAnnual: number;
   peggingEnabled: boolean;
   peggingBaseRate: number | null;
   peggingCurrentRate: number | null;

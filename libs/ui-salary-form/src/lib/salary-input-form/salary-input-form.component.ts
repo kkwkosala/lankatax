@@ -88,23 +88,6 @@ import { SalaryFormValue } from '../models/salary-form.models';
         </div>
       </details>
 
-      <!-- Annual Tax Relief -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Annual Tax Relief</label>
-        <div class="relative">
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium pointer-events-none">LKR</span>
-          <input
-            formControlName="taxReliefAnnual"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="0.00"
-            class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          />
-        </div>
-        <p class="mt-1 text-xs text-gray-400">Deducted annually — max LKR 1,200,000</p>
-      </div>
-
       <!-- Pegging Allowance -->
       <details class="border border-gray-200 rounded-lg overflow-hidden">
         <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 cursor-pointer select-none hover:bg-gray-100 transition-colors">
@@ -202,7 +185,6 @@ export class SalaryInputFormComponent implements OnInit {
       transportAllowance:[null],
       dataAllowance:     [null],
       otherAllowances:   [null],
-      taxReliefAnnual:   [null],
       peggingEnabled:    [false],
       peggingBaseRate:   [null],
       peggingCurrentRate:[null],
@@ -225,7 +207,6 @@ export class SalaryInputFormComponent implements OnInit {
         transportAllowance: v.transportAllowance ?? 0,
         dataAllowance:      v.dataAllowance ?? 0,
         otherAllowances:    v.otherAllowances ?? 0,
-        taxReliefAnnual:    v.taxReliefAnnual ?? 0,
         peggingEnabled:     v.peggingEnabled ?? false,
         peggingBaseRate:    v.peggingBaseRate,
         peggingCurrentRate: v.peggingCurrentRate,
