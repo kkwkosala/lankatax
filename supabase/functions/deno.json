@@ -1,0 +1,20 @@
+// Deno workspace config for Supabase Edge Functions
+{
+  "imports": {
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+  },
+  "tasks": {
+    "test": "deno test --allow-env --allow-net supabase/functions/"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "singleQuote": true
+  }
+}
