@@ -1,1 +1,1 @@
-// Sprint 4 — Chart components (stub)
+export * from './lib/retirement-chart/retirement-chart.component';
