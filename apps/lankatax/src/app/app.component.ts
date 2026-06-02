@@ -34,6 +34,10 @@ import { AuthActions, selectIsAuthenticated, selectCurrentUser } from '@lankatax
               class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-orange-700 hover:bg-orange-50 transition-colors no-underline">
               History
             </a>
+            <a routerLink="/budget" routerLinkActive="text-orange-700 bg-orange-50"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-orange-700 hover:bg-orange-50 transition-colors no-underline">
+              Budget
+            </a>
           </ng-container>
         </nav>
 
