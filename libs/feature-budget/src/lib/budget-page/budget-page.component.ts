@@ -74,14 +74,14 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
             class="flex items-center gap-2 mb-2">
             <input type="text"
               [value]="item.label"
-              (input)="state.updateFixedItem(i, {label: $any($event.target).value})"
+              (change)="state.updateFixedItem(i, {label: $any($event.target).value})"
               placeholder="e.g. Rent"
-              class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+              class="flex-1 min-w-[130px] px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
             <input type="number" min="0" step="1000"
               [value]="item.amount || null"
               (input)="state.updateFixedItem(i, {amount: +$any($event.target).value || 0})"
               placeholder="0"
-              class="w-36 px-3 py-2 border border-gray-200 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-orange-400" />
+              class="w-32 px-3 py-2 border border-gray-200 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-orange-400" />
             <button (click)="state.removeFixedItem(i)" type="button"
               class="text-gray-300 hover:text-red-500 transition-colors shrink-0">
               <mat-icon class="text-lg">close</mat-icon>
@@ -109,14 +109,14 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
             class="flex items-center gap-2 mb-2">
             <input type="text"
               [value]="item.label"
-              (input)="state.updateVariableItem(i, {label: $any($event.target).value})"
+              (change)="state.updateVariableItem(i, {label: $any($event.target).value})"
               placeholder="e.g. Food"
-              class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+              class="flex-1 min-w-[130px] px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
             <input type="number" min="0" step="1000"
               [value]="item.amount || null"
               (input)="state.updateVariableItem(i, {amount: +$any($event.target).value || 0})"
               placeholder="0"
-              class="w-36 px-3 py-2 border border-gray-200 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-orange-400" />
+              class="w-32 px-3 py-2 border border-gray-200 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-orange-400" />
             <button (click)="state.removeVariableItem(i)" type="button"
               class="text-gray-300 hover:text-red-500 transition-colors shrink-0">
               <mat-icon class="text-lg">close</mat-icon>
