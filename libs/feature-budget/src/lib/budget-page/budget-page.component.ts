@@ -223,17 +223,23 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
       <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
         <h2 class="text-base font-semibold text-gray-800 mb-5 flex items-center gap-2">
           <mat-icon class="text-orange-700 text-lg">trending_up</mat-icon>
-          Retirement at 55
+          Retirement at {{ state.retirementAge() }}
         </h2>
 
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-5">
-          <div class="flex items-center gap-3">
-            <label class="text-sm font-medium text-gray-700 shrink-0">Your current age</label>
-            <input type="number" min="18" max="54"
-              [value]="currentAge()"
-              (input)="onAgeInput($any($event.target).value)"
-              placeholder="e.g. 30"
-              class="w-24 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 text-center" />
+        <div class="flex flex-wrap items-center gap-4 mb-5">
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-medium text-gray-700 shrink-0">Current age</label>
+            <input type="text" inputmode="numeric"
+              [value]="state.currentAge()"
+              (change)="state.currentAge.set(+$any($event.target).value || 35)"
+              class="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 text-center" />
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-medium text-gray-700 shrink-0">Retire at</label>
+            <input type="text" inputmode="numeric"
+              [value]="state.retirementAge()"
+              (change)="state.retirementAge.set(+$any($event.target).value || 55)"
+              class="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 text-center" />
           </div>
 
           <ng-container *ngIf="projection() as proj">
@@ -244,10 +250,10 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
           </ng-container>
         </div>
 
-        <div *ngIf="currentAge() !== null && (currentAge()! < 18 || currentAge()! >= 55)"
+        <div *ngIf="state.currentAge() >= state.retirementAge()"
           class="mb-4 flex items-center gap-2 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
           <mat-icon class="text-amber-500 text-sm shrink-0">warning_amber</mat-icon>
-          Please enter an age between 18 and 54.
+          Current age must be less than retirement age.
         </div>
 
         <div *ngIf="state.isOverspent()"
@@ -256,7 +262,7 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
           You're overspending — reduce fixed or variable items to unlock the projection.
         </div>
 
-        <div *ngIf="!state.isOverspent() && state.savingsAmount() === 0 && currentAge() !== null"
+        <div *ngIf="!state.isOverspent() && state.savingsAmount() === 0"
           class="mb-4 flex items-center gap-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-500">
           <mat-icon class="text-gray-400 text-sm shrink-0">savings</mat-icon>
           Add your expenses above to see your savings and retirement projection.
@@ -286,7 +292,7 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
         <div *ngIf="!projection()"
           class="flex flex-col items-center justify-center py-12 text-center rounded-xl border-2 border-dashed border-gray-200">
           <span class="text-4xl mb-3">📊</span>
-          <p class="text-sm font-medium text-gray-400">Enter your age above</p>
+          <p class="text-sm font-medium text-gray-400">Enter your income and expenses above to see projections</p>
         </div>
       </div>
 
@@ -296,7 +302,7 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
           <mat-icon class="text-green-700 text-lg">account_balance</mat-icon>
           Total Retirement Fund — Savings + EPF + ETF
         </h2>
-        <p class="text-xs text-gray-400 mb-5">Projects combined monthly contributions to age 55.</p>
+        <p class="text-xs text-gray-400 mb-5">Projects combined monthly contributions to age {{ state.retirementAge() }}.</p>
 
         <div *ngIf="calcResult()" class="mb-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div class="bg-orange-50 rounded-lg p-3 border border-orange-100">
@@ -369,15 +375,15 @@ export class BudgetPageComponent implements OnInit {
   readonly state         = inject(BudgetPlannerStateService);
 
   readonly calcResult = this.store.selectSignal(selectCalculationResult);
-  readonly currentAge = signal<number | null>(null);
 
   readonly projection = computed(() => {
-    const age = this.currentAge();
-    if (age === null || age < 18 || age >= 55) return null;
+    const age     = this.state.currentAge();
+    const retAge  = this.state.retirementAge();
+    if (age < 18 || age >= retAge) return null;
     if (this.state.savingsAmount() === 0) return null;
     return this.svc.computeRetirement(
       this.state.savingsAmount(), age, [0.08, 0.10, 0.12],
-      this.state.existingPersonalSavings(),
+      this.state.existingPersonalSavings(), retAge,
     );
   });
 
@@ -389,12 +395,13 @@ export class BudgetPageComponent implements OnInit {
   );
 
   readonly combinedProjection = computed(() => {
-    const age = this.currentAge();
-    if (age === null || age < 18 || age >= 55) return null;
+    const age    = this.state.currentAge();
+    const retAge = this.state.retirementAge();
+    if (age < 18 || age >= retAge) return null;
     if (this.combinedMonthly() === 0) return null;
     return this.svc.computeRetirement(
       this.combinedMonthly(), age, [0.08, 0.10, 0.12],
-      this.state.totalExistingSavings(),
+      this.state.totalExistingSavings(), retAge,
     );
   });
 
@@ -403,10 +410,5 @@ export class BudgetPageComponent implements OnInit {
     if (takeHome > 0 && this.state.income() === 0) {
       this.state.income.set(takeHome);
     }
-  }
-
-  onAgeInput(raw: string): void {
-    const val = parseInt(raw, 10);
-    this.currentAge.set(isNaN(val) ? null : val);
   }
 }

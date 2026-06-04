@@ -14,6 +14,10 @@ export class BudgetPlannerStateService {
   /** Take-home salary. */
   readonly income = signal(0);
 
+  /** Age settings — shared between Budget Planner and FIRE Tracker. */
+  readonly currentAge    = signal(35);
+  readonly retirementAge = signal(55);
+
   /** Existing savings corpus (used as starting base for projections). */
   readonly existingPersonalSavings = signal(0);
   readonly existingEpfBalance      = signal(0);

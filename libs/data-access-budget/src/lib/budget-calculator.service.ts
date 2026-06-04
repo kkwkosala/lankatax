@@ -40,6 +40,7 @@ export class BudgetCalculatorService {
     withdrawalRate:           number,
     currentAge:               number,
     inflationRate:            number = 0.06,
+    salaryGrowthRate:         number = 0,
   ): FireProjection {
     const monthlyRate           = annualGrowthRate / 12;
     const annualSpend           = targetMonthlySpend * 12;
@@ -71,10 +72,20 @@ export class BudgetCalculatorService {
     let crossoverIndex: number | null = null;
 
     for (let m = 0; m < maxMonths; m++) {
-      const d       = new Date(startDate.getFullYear(), startDate.getMonth() + m, 1);
-      const key     = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-      const savings = savingsMap.has(key) ? savingsMap.get(key)! : projectedMonthlySavings;
-      corpus        = (corpus + savings) * (1 + monthlyRate);
+      const d   = new Date(startDate.getFullYear(), startDate.getMonth() + m, 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+      let savings: number;
+      if (savingsMap.has(key)) {
+        // Use actual historical savings as-is.
+        savings = savingsMap.get(key)!;
+      } else {
+        // Apply annual salary growth: savings double every (1/salaryGrowthRate) years.
+        const yearsElapsed = m / 12;
+        savings = projectedMonthlySavings * Math.pow(1 + salaryGrowthRate, yearsElapsed);
+      }
+
+      corpus = (corpus + savings) * (1 + monthlyRate);
 
       if (d.getMonth() === 11 || m === maxMonths - 1) {
         const elapsedMonths = m + 1;
@@ -113,8 +124,8 @@ export class BudgetCalculatorService {
     currentAge:     number,
     rates:          [number, number, number],
     startCorpus:    number = 0,
+    retirementAge:  number = 55,
   ): RetirementProjection {
-    const retirementAge = 55;
     const yearsToRetire = retirementAge - currentAge;
     const startYear     = new Date().getFullYear();
     const labels: string[]   = [];

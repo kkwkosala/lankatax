@@ -50,9 +50,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
                 Take-home salary
                 <a routerLink="/calculator" class="ml-1 text-orange-600 hover:underline">(from calculator)</a>
               </label>
-              <input type="number" min="0" step="1000"
+              <input type="text" inputmode="numeric"
                 [value]="incomeAmount()"
-                (input)="incomeAmount.set(+$any($event.target).value)"
+                (change)="incomeAmount.set(+$any($event.target).value || 0)"
                 placeholder="0"
                 class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
             </div>
@@ -65,9 +65,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
               (input)="updateOtherLabel(i, $any($event.target).value)"
               placeholder="e.g. Freelance, Rental"
               class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
-            <input type="number" min="0" step="1000"
+            <input type="text" inputmode="numeric"
               [value]="src.amount"
-              (input)="updateOtherAmount(i, +$any($event.target).value)"
+              (change)="updateOtherAmount(i, +$any($event.target).value || 0)"
               placeholder="Amount"
               class="w-36 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
             <button (click)="removeOtherIncome(i)" type="button"
@@ -92,9 +92,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
         <!-- Spend -->
         <div class="mb-4">
           <label class="block text-xs text-gray-500 mb-1">Monthly Spend</label>
-          <input type="number" min="0" step="1000"
+          <input type="text" inputmode="numeric"
             [value]="spendAmount()"
-            (input)="spendAmount.set(+$any($event.target).value)"
+            (change)="spendAmount.set(+$any($event.target).value || 0)"
             placeholder="0"
             class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
         </div>
@@ -128,9 +128,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
             Current savings / investments (optional)
             <span class="text-gray-400 ml-1">— used as starting base for FIRE projection</span>
           </label>
-          <input type="number" min="0" step="10000"
+          <input type="text" inputmode="numeric"
             [value]="startingCorpus()"
-            (input)="startingCorpus.set(+$any($event.target).value)"
+            (change)="startingCorpus.set(+$any($event.target).value || 0)"
             placeholder="0"
             class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
         </div>
@@ -158,20 +158,28 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
           <mat-icon class="text-orange-700 text-lg">tune</mat-icon>
           Projection Settings
         </h2>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           <div>
             <label class="block text-xs text-gray-500 mb-1">Your current age</label>
-            <input type="number" min="18" max="64"
-              [value]="currentAge()"
-              (input)="currentAge.set(+$any($event.target).value || 30)"
-              placeholder="e.g. 30"
+            <input type="text" inputmode="numeric"
+              [value]="planner.currentAge()"
+              (change)="planner.currentAge.set(+$any($event.target).value || 35)"
+              placeholder="e.g. 35"
+              class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Retire at age</label>
+            <input type="text" inputmode="numeric"
+              [value]="planner.retirementAge()"
+              (change)="planner.retirementAge.set(+$any($event.target).value || 55)"
+              placeholder="e.g. 55"
               class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
           </div>
           <div>
             <label class="block text-xs text-gray-500 mb-1">Annual growth rate %</label>
-            <input type="number" min="1" max="30" step="0.5"
+            <input type="text" inputmode="decimal"
               [value]="annualGrowthRate()"
-              (input)="annualGrowthRate.set(+$any($event.target).value || 10)"
+              (change)="annualGrowthRate.set(+$any($event.target).value || 10)"
               placeholder="10"
               class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
           </div>
@@ -180,9 +188,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
               Withdrawal rate %
               <span class="text-gray-400">(4% safe)</span>
             </label>
-            <input type="number" min="1" max="20" step="0.5"
+            <input type="text" inputmode="decimal"
               [value]="withdrawalRate()"
-              (input)="withdrawalRate.set(+$any($event.target).value || 4)"
+              (change)="withdrawalRate.set(+$any($event.target).value || 4)"
               placeholder="4"
               class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
           </div>
@@ -191,9 +199,20 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
               Inflation rate %
               <span class="text-gray-400">(LK avg 6%)</span>
             </label>
-            <input type="number" min="0" max="50" step="0.5"
+            <input type="text" inputmode="decimal"
               [value]="inflationRate()"
-              (input)="inflationRate.set(+$any($event.target).value || 6)"
+              (change)="inflationRate.set(+$any($event.target).value || 6)"
+              placeholder="6"
+              class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">
+              Salary growth %/yr
+              <span class="text-gray-400">(0 = fixed)</span>
+            </label>
+            <input type="text" inputmode="decimal"
+              [value]="salaryGrowthRate()"
+              (change)="salaryGrowthRate.set(+$any($event.target).value || 0)"
               placeholder="6"
               class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
           </div>
@@ -225,6 +244,7 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
                 Target corpus: {{ proj.independenceThreshold | lkrCurrency }} (today's LKR) &nbsp;·&nbsp;
                 Saving {{ totals().savings | lkrCurrency }}/month &nbsp;·&nbsp;
                 {{ annualGrowthRate() }}% growth / {{ withdrawalRate() }}% withdrawal / {{ inflationRate() }}% inflation
+                <ng-container *ngIf="salaryGrowthRate() > 0"> / {{ salaryGrowthRate() }}% salary growth</ng-container>
               </p>
             </div>
           </div>
@@ -323,7 +343,7 @@ export class FirePageComponent implements OnInit {
   private readonly store    = inject(Store);
   private readonly svc      = inject(BudgetCalculatorService);
   private readonly api      = inject(BudgetApiService);
-  private readonly planner  = inject(BudgetPlannerStateService);
+  readonly planner          = inject(BudgetPlannerStateService);
 
   private readonly calcResult = this.store.selectSignal(selectCalculationResult);
 
@@ -333,10 +353,10 @@ export class FirePageComponent implements OnInit {
   readonly spendAmount    = signal(0);
   readonly startingCorpus = signal(0);
 
-  readonly currentAge      = signal(30);
-  readonly annualGrowthRate = signal(10);
-  readonly withdrawalRate   = signal(4);
-  readonly inflationRate    = signal(6);
+  readonly annualGrowthRate  = signal(10);
+  readonly withdrawalRate    = signal(4);
+  readonly inflationRate     = signal(6);
+  readonly salaryGrowthRate  = signal(6);
 
   readonly saving         = signal(false);
   readonly savedOk        = signal(false);
@@ -351,8 +371,9 @@ export class FirePageComponent implements OnInit {
   readonly hasHistory = computed(() => this.history().length > 0);
 
   readonly projection = computed(() => {
-    const age = this.currentAge();
-    if (!age || age < 18 || age >= 65) return null;
+    const age    = this.planner.currentAge();
+    const retAge = this.planner.retirementAge();
+    if (!age || age < 18 || age >= retAge) return null;
     if (this.totals().totalIncome <= 0) return null;
 
     const startCorpus = this.hasHistory()
@@ -368,6 +389,7 @@ export class FirePageComponent implements OnInit {
       this.withdrawalRate() / 100,
       age,
       this.inflationRate() / 100,
+      this.salaryGrowthRate() / 100,
     );
   });
 
