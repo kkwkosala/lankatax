@@ -33,9 +33,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
           </div>
           <div class="flex-1">
             <p class="text-xs text-gray-400 uppercase tracking-wide font-semibold">Monthly Take-Home Income</p>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" min="0" step="1000"
+            <input type="text" inputmode="numeric" pattern="[0-9]*"
               [value]="state.income() || ''"
-              (input)="state.income.set(+$any($event.target).value || 0)"
+              (change)="state.income.set(+$any($event.target).value || 0)"
               placeholder="0"
               class="text-2xl font-bold text-gray-900 mt-0.5 w-full border-0 outline-none bg-transparent focus:ring-0 p-0" />
           </div>
@@ -77,9 +77,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
               (change)="state.updateFixedItem(i, {label: $any($event.target).value})"
               placeholder="e.g. Rent"
               class="flex-1 min-w-[130px] px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
-            <input type="text" inputmode="numeric" pattern="[0-9]*" min="0"
+            <input type="text" inputmode="numeric" pattern="[0-9]*"
               [value]="item.amount || ''"
-              (input)="state.updateFixedItem(i, {amount: +$any($event.target).value || 0})"
+              (change)="state.updateFixedItem(i, {amount: +$any($event.target).value || 0})"
               placeholder="0"
               class="w-32 px-3 py-2 border border-gray-200 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-orange-400" />
             <button (click)="state.removeFixedItem(i)" type="button"
@@ -112,9 +112,9 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
               (change)="state.updateVariableItem(i, {label: $any($event.target).value})"
               placeholder="e.g. Food"
               class="flex-1 min-w-[130px] px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
-            <input type="text" inputmode="numeric" pattern="[0-9]*" min="0"
+            <input type="text" inputmode="numeric" pattern="[0-9]*"
               [value]="item.amount || ''"
-              (input)="state.updateVariableItem(i, {amount: +$any($event.target).value || 0})"
+              (change)="state.updateVariableItem(i, {amount: +$any($event.target).value || 0})"
               placeholder="0"
               class="w-32 px-3 py-2 border border-gray-200 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-orange-400" />
             <button (click)="state.removeVariableItem(i)" type="button"
