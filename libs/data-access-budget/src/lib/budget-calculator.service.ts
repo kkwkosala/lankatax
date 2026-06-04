@@ -112,6 +112,7 @@ export class BudgetCalculatorService {
     monthlySavings: number,
     currentAge:     number,
     rates:          [number, number, number],
+    startCorpus:    number = 0,
   ): RetirementProjection {
     const retirementAge = 55;
     const yearsToRetire = retirementAge - currentAge;
@@ -122,7 +123,7 @@ export class BudgetCalculatorService {
     for (let y = 0; y <= yearsToRetire; y++) {
       labels.push(String(startYear + y));
       for (let ri = 0; ri < rates.length; ri++) {
-        const prev = y === 0 ? 0 : series[ri][y - 1];
+        const prev = y === 0 ? startCorpus : series[ri][y - 1];
         series[ri].push((prev + monthlySavings * 12) * (1 + rates[ri]));
       }
     }

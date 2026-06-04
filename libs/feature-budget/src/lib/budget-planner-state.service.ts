@@ -14,6 +14,13 @@ export class BudgetPlannerStateService {
   /** Take-home salary. */
   readonly income = signal(0);
 
+  /** Existing savings corpus (used as starting base for projections). */
+  readonly existingPersonalSavings = signal(0);
+  readonly existingEpfBalance      = signal(0);
+  readonly totalExistingSavings    = computed(() =>
+    this.existingPersonalSavings() + this.existingEpfBalance()
+  );
+
   /** Fixed monthly obligations (rent, EMIs, school fees, etc.). */
   readonly fixedItems = signal<BudgetItem[]>([
     { label: 'Rent / Housing',      amount: 0 },

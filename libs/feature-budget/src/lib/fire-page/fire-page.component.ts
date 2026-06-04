@@ -372,16 +372,17 @@ export class FirePageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // Pre-fill income: prefer planner's income (already set from calculator),
-    // fall back to calculator result directly.
     const plannerIncome = this.planner.income();
     const takeHome      = this.calcResult()?.takeHomeSalary ?? 0;
     const incomeToUse   = plannerIncome > 0 ? plannerIncome : takeHome;
     if (incomeToUse > 0) this.incomeAmount.set(incomeToUse);
 
-    // Pre-fill spend from planner's computed spend amount (needs + fun + irregular).
     const plannerSpend = this.planner.spendAmount();
     if (plannerSpend > 0) this.spendAmount.set(plannerSpend);
+
+    // Pre-fill starting corpus from planner's existing savings (total: personal + EPF).
+    const plannerCorpus = this.planner.totalExistingSavings();
+    if (plannerCorpus > 0) this.startingCorpus.set(plannerCorpus);
 
     this.loadHistory();
   }

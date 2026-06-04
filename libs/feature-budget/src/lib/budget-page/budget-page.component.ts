@@ -53,6 +53,51 @@ import { BudgetPlannerStateService } from '../budget-planner-state.service';
         </div>
       </div>
 
+      <!-- Existing Savings card -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-5">
+        <h2 class="text-base font-semibold text-gray-800 mb-1 flex items-center gap-2">
+          <mat-icon class="text-blue-600 text-lg">account_balance</mat-icon>
+          Current Savings &amp; Investments
+        </h2>
+        <p class="text-xs text-gray-400 mb-4">
+          Your existing corpus — used as the starting base for both retirement and FIRE projections.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 mb-1">
+              💼 Personal Savings
+              <span class="font-normal text-gray-400 ml-1">(FDs, stocks, cash, unit trusts)</span>
+            </label>
+            <input type="text" inputmode="numeric" pattern="[0-9]*"
+              [value]="state.existingPersonalSavings() || ''"
+              (change)="state.existingPersonalSavings.set(+$any($event.target).value || 0)"
+              placeholder="0"
+              class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 mb-1">
+              🏦 EPF Balance
+              <span class="font-normal text-gray-400 ml-1">(check your EPF statement)</span>
+            </label>
+            <input type="text" inputmode="numeric" pattern="[0-9]*"
+              [value]="state.existingEpfBalance() || ''"
+              (change)="state.existingEpfBalance.set(+$any($event.target).value || 0)"
+              placeholder="0"
+              class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+        </div>
+
+        <div *ngIf="state.totalExistingSavings() > 0"
+          class="mt-4 flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-blue-600 text-base">savings</mat-icon>
+            <span class="text-sm font-semibold text-blue-800">Total Existing Corpus</span>
+          </div>
+          <span class="text-base font-bold text-blue-700">{{ state.totalExistingSavings() | lkrCurrency }}</span>
+        </div>
+      </div>
+
       <!-- Allocation card -->
       <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-5">
         <h2 class="text-base font-semibold text-gray-800 mb-5 flex items-center gap-2">
@@ -330,7 +375,10 @@ export class BudgetPageComponent implements OnInit {
     const age = this.currentAge();
     if (age === null || age < 18 || age >= 55) return null;
     if (this.state.savingsAmount() === 0) return null;
-    return this.svc.computeRetirement(this.state.savingsAmount(), age, [0.08, 0.10, 0.12]);
+    return this.svc.computeRetirement(
+      this.state.savingsAmount(), age, [0.08, 0.10, 0.12],
+      this.state.existingPersonalSavings(),
+    );
   });
 
   readonly epfEmployee = computed(() => this.calcResult()?.employeeEpf ?? 0);
@@ -344,7 +392,10 @@ export class BudgetPageComponent implements OnInit {
     const age = this.currentAge();
     if (age === null || age < 18 || age >= 55) return null;
     if (this.combinedMonthly() === 0) return null;
-    return this.svc.computeRetirement(this.combinedMonthly(), age, [0.08, 0.10, 0.12]);
+    return this.svc.computeRetirement(
+      this.combinedMonthly(), age, [0.08, 0.10, 0.12],
+      this.state.totalExistingSavings(),
+    );
   });
 
   ngOnInit(): void {
